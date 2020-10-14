@@ -17,8 +17,8 @@ before_script:
   - docker-compose build 
 
 scripts:
-  - docker-compose run -d --name appserver web
-  - docker exec appserver pytest --cov=appserver
+  - docker-compose run -d --name postserver web
+  - docker exec postserver pytest --cov=postserver
   - docker exec -e TRAVIS_JOB_ID="$TRAVIS_JOB_ID" -e TRAVIS_BRANCH="$TRAVIS_BRANCH" -e COVERALLS_REPO_TOKEN="$COVERALLS_REPO_TOKEN" appserver coveralls
 
 #--------------------------------------------------------------------------------#
@@ -40,11 +40,11 @@ deploy:
   - provider: script
     
     script: 
-      docker build . -t facutorraca/bookbnb-appserver
-      docker tag facutorraca/bookbnb-appserver registry.heroku.com/$HEROKU_APPSERVER_NAME/web;
-      docker push facutorraca/bookbnb-appserver;
-      heroku container:push web --app $HEROKU_APPSERVER_NAME;
-      heroku container:release web --app $HEROKU_APPSERVER_NAME;
+      docker build . -t facutorraca/bookbnb-postserver
+      docker tag facutorraca/bookbnb-postserver registry.heroku.com/$HEROKU_APP_NAME/web;
+      docker push facutorraca/bookbnb-postserver;
+      heroku container:push web --app $HEROKU_APP_NAME;
+      heroku container:release web --app $HEROKU_APP_NAME;
 
     on:
       branch: master
