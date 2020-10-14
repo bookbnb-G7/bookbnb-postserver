@@ -1,2 +1,2 @@
 #!/bin/sh
-pylint --rcfile=.pytlintrc ./postserver/
+pylint --rcfile=.pylintrc ./postserver/
