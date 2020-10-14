@@ -17,8 +17,8 @@ async def shutdown():
     await database.disconnect()
 
 @app.get("/")
-async def pong():
-    return {"message":"pudiste crack!"}
+async def initial():
+    return {"message":"postserver"}
 
 @app.get("/facu")
 async def facu():
