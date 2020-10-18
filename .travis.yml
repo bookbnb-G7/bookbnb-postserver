@@ -13,14 +13,15 @@ services:
 
 #------------------------------------testing------------------------------------#
 before_script:
-  - pip install docker-compose
-  - docker-compose build 
+  - docker-compose build
+  - docker-compose up -d
 
 scripts:
-  - docker-compose run -d --name postserver web
-  - docker exec postserver pytest --cov=postserver
-  - docker exec -e TRAVIS_JOB_ID="$TRAVIS_JOB_ID" -e TRAVIS_BRANCH="$TRAVIS_BRANCH" -e COVERALLS_REPO_TOKEN="$COVERALLS_REPO_TOKEN" postserver coveralls
+  - docker exec bookbnb-postserver_web pytest --cov=postserver
 
+after_success:
+  - docker exec -e TRAVIS_JOB_ID="$TRAVIS_JOB_ID" -e TRAVIS_BRANCH="$TRAVIS_BRANCH 
+    -e COVERALLS_REPO_TOKEN="$COVERALLS_REPO_TOKEN" bookbnb-postserver_web coveralls
 #--------------------------------------------------------------------------------#
 
 
