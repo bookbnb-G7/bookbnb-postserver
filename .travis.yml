@@ -15,6 +15,9 @@ services:
 before_script:
   - docker-compose build
   - docker-compose up -d
+  
+  # check that db is connected
+  - docker exec bookbnb-postserver_web bash -c 'while !</dev/tcp/db/5432; do sleep 1; done;'
 
 scripts:
   - docker exec bookbnb-postserver_web pytest --cov=postserver
