@@ -3,7 +3,7 @@ from app.api.models.post_model import PostSchema
 
 async def post(payload: PostSchema):
     query = posts_table.insert().values(title=payload.title, 
-    	                       		    body=payload.description,
+    	                       		    body=payload.body,
     	                                author=payload.author)
 
     return await database.execute(query=query)
