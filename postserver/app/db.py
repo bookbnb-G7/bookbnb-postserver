@@ -18,6 +18,7 @@ posts_table = Table(
     Column("id", Integer, primary_key=True),
     Column("title", String(50), nullable=False),
     Column("body", String(500), nullable=False),
+    Column("author", String(30), nullable=False),
     Column("created_date", DateTime, default=func.now(), nullable=False),
 )
 
