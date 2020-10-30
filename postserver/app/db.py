@@ -1,7 +1,7 @@
 import os
 
-from sqlalchemy import Column, DateTime, Integer, Float, MetaData, String, Table, ForeignKey, create_engine
 from sqlalchemy.sql import func
+from sqlalchemy import Column, DateTime, Integer, Float, MetaData, String, Table, ForeignKey, create_engine
 
 from databases import Database
 

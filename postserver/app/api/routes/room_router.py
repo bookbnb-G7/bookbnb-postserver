@@ -1,5 +1,5 @@
-from app.parser import Parser
-from app.output import Output
+from app.io.parser import Parser
+from app.io.output import Output
 
 from fastapi import APIRouter, HTTPException
 
