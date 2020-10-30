@@ -2,8 +2,16 @@ from app.model.room_rating import RoomRating
 from app.model.room_review import RoomReview
 
 class Output:
+	def reply_room(self, room_id, room):
+		review_response = {
+			'id': room_id,
+			'price_per_day': room.price_per_day,
+			'accommodation_type': room.accommodation_type
+		}
+		
+		return review_response
+
 	def reply_room_creation(self, room_id, room):
-		print('entre!')
 		review_response = {
 			'id': room_id,
 			'price_per_day': room.price_per_day,

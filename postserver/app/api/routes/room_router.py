@@ -15,11 +15,16 @@ output = Output()
 parser = Parser()
 router = APIRouter()
 
-@router.post('/', response_model=RoomDB, status_code=200)
+@router.post('/', response_model=RoomDB, status_code=201)
 async def create_room(payload: RoomSchema):
 	room = parser.get_room(payload)
 	room_id = await room_controller.create(room)
 	return output.reply_room_creation(room_id, room)
+
+@router.get('/{room_id}', response_model=RoomDB, status_code=200)
+async def get_room(room_id: int):
+	room = await room_controller.read(room_id)
+	return output.reply_room(room_id, room)
 
 @router.post('/{room_id}/ratings', response_model=RoomRatingDB, status_code=201)
 async def rate_room(payload: RoomRatingSchema, room_id: int):
