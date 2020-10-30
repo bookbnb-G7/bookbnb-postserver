@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api.routes import post_route
+from app.api.routes import room_router
 from app.db import engine, metadata, database
 
 metadata.create_all(engine)
@@ -15,7 +15,7 @@ async def shutdown():
     await database.disconnect()
 
 @app.get("/")
-async def initial():
+async def pong():
     return {"message": "postserver"}
 
-app.include_router(post_route.router, prefix="/posts", tags=["posts"])
+app.include_router(room_router.router, prefix="/rooms", tags=["rooms"])
