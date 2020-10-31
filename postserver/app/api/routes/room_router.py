@@ -30,6 +30,16 @@ async def get_room(room_id: int):
 	room_info = RoomDAO.get_room(room_id)
 	return room_info
 
+@router.get('/{room_id}/reviews/{review_id}', response_model=RoomReviewDB, status_code=200)
+async def get_room_review(room_id: int, review_id: int):
+	room_review_info = RoomReviewDAO.get_room_review(room_id, review_id)
+	return room_review_info
+
+@router.get('/{room_id}/ratings/{rating_id}', response_model=RoomRatingDB, status_code=200)
+async def get_room_rating(room_id: int, rating_id: int):
+	room_rating_info = RoomRatingDAO.get_room_rating(room_id, rating_id)
+	return room_rating_info
+
 @router.get('/{room_id}/ratings', response_model=RoomRatingList, status_code=200)
 async def get_all_room_reviews(room_id: int):
 	room_ratings_list = RoomRatingDAO.get_all_ratings(room_id)

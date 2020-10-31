@@ -25,3 +25,11 @@ class RoomRatingDAO:
 
 		return serialized_list
 	
+	@classmethod
+	def get_room_rating(cls, room_id, rating_id):
+		room_rating = session.query(RoomRating).get(rating_id)
+
+		# this should return an error in case of  
+		# the rating do not for the specified room
+
+		return room_rating.serialize()
