@@ -1,3 +1,5 @@
+"""
+
 from app.model.room import Room
 from app.model.room_rating import RoomRating
 from app.model.room_review import RoomReview
@@ -9,6 +11,7 @@ class Parser:
 
 		return Room(accommodation_type, price_per_day)
 
+	
 	def get_room_rating(self, room_rating_payload, room_id):
 		rating = room_rating_payload.rating
 		reviewer = room_rating_payload.reviewer
@@ -22,3 +25,4 @@ class Parser:
 		reviewer_id = room_review_payload.reviewer_id
 
 		return RoomReview(review, reviewer, room_id, reviewer_id)
+"""

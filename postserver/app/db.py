@@ -1,43 +1,18 @@
 import os
 
-from sqlalchemy.sql import func
-from sqlalchemy import Column, DateTime, Integer, Float, MetaData, String, Table, ForeignKey, create_engine
-
-from databases import Database
+# SQLAlchemy
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-# SQLAlchemy
+# SQLAlchemy Engine that will interact PostgreSQL database
 engine = create_engine(DATABASE_URL)
-metadata = MetaData()
 
-rooms_table = Table(
-    "rooms",
-    metadata,
-    Column("id", Integer, primary_key=True),
-    Column("price_per_day", Float, nullable=False),
-    Column("accommodation_type", String(60), nullable=False)
-)
+# base class for our classes definitions.
+Base = declarative_base()
 
-room_ratings_table = Table(
-    "room_ratings",
-    metadata,
-    Column("id", Integer, primary_key=True),
-    Column("rating", Integer, nullable=False),
-    Column("reviewer", String(50), nullable=False),
-    Column("reviewer_id", Integer, nullable=False),
-    Column("room_id", Integer, ForeignKey('rooms.id'))
-)
-
-room_reviews_table = Table(
-    "room_reviews",
-    metadata,
-    Column("id", Integer, primary_key=True),
-    Column("review", String(500), nullable=False),
-    Column("reviewer", String(50), nullable=False),
-    Column("reviewer_id", Integer, nullable=False),
-    Column("room_id", Integer, ForeignKey('rooms.id'))
-)
-
-# databases query builder
-database = Database(DATABASE_URL)
+# SQLAlchemy ORM session factory bound to this engine 
+Session = sessionmaker(bind=engine)
+session = Session()
