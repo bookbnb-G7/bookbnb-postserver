@@ -7,14 +7,25 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 ENVIRONMENT = os.getenv("ENVIRONMENT")
 
 engine = None
+session = None
 
 if ENVIRONMENT == 'production':
+	# use postgresql 
 	engine = create_engine(DATABASE_URL)	
-else: # to use sqlite instead of postgresql
-	engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-session = SessionLocal()
+if ENVIRONMENT == 'testing' or ENVIRONMENT == 'development':
+ 	# use sqlite 
+ 	engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+
+Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+session = Session()
 
 # Create a Base class for models
 Base = declarative_base()
+
+def get_db():
+	db = Session()
+	try:
+		yield db
+	finally:
+		db.close()
