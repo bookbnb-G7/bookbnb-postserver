@@ -1,18 +1,20 @@
 import os
-
-# SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
 DATABASE_URL = os.getenv("DATABASE_URL")
+ENVIRONMENT = os.getenv("ENVIRONMENT")
 
-# SQLAlchemy Engine that will interact PostgreSQL database
-engine = create_engine(DATABASE_URL)
+engine = None
 
-# base class for our classes definitions.
+if ENVIRONMENT == 'production':
+	engine = create_engine(DATABASE_URL)	
+else: # to use sqlite instead of postgresql
+	engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+session = SessionLocal()
+
+# Create a Base class for models
 Base = declarative_base()
-
-# SQLAlchemy ORM session factory bound to this engine 
-Session = sessionmaker(bind=engine)
-session = Session()
