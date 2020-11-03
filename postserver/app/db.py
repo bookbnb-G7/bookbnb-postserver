@@ -1,26 +1,31 @@
 import os
-
-from sqlalchemy import Column, DateTime, Integer, MetaData, String, Table, create_engine
-from sqlalchemy.sql import func
-
-from databases import Database
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 
 DATABASE_URL = os.getenv("DATABASE_URL")
+ENVIRONMENT = os.getenv("ENVIRONMENT")
 
-# SQLAlchemy
-engine = create_engine(DATABASE_URL)
+engine = None
+session = None
 
-metadata = MetaData()
+if ENVIRONMENT == 'production':
+	# use postgresql 
+	engine = create_engine(DATABASE_URL)	
 
-posts_table = Table(
-    "posts",
-    metadata,
-    Column("id", Integer, primary_key=True),
-    Column("title", String(50), nullable=False),
-    Column("body", String(500), nullable=False),
-    Column("author", String(30), nullable=False),
-    Column("created_date", DateTime, default=func.now(), nullable=False),
-)
+if ENVIRONMENT == 'development':
+ 	# use sqlite 
+ 	engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 
-# databases query builder
-database = Database(DATABASE_URL)
+Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+session = Session()
+
+# Create a Base class for models
+Base = declarative_base()
+
+def get_db():
+	db = Session()
+	try:
+		yield db
+	finally:
+		db.close()
