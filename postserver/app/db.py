@@ -13,7 +13,7 @@ if ENVIRONMENT == 'production':
 	# use postgresql 
 	engine = create_engine(DATABASE_URL)	
 
-if ENVIRONMENT == 'testing' or ENVIRONMENT == 'development':
+if ENVIRONMENT == 'development':
  	# use sqlite 
  	engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 
