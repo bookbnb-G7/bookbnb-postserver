@@ -1,5 +1,6 @@
 from app.db import Base 
-from sqlalchemy import Column, String, Integer, Float, ForeignKey
+from datetime import datetime
+from sqlalchemy import Column, String, Integer, Float, ForeignKey, DateTime
 
 class RoomRating(Base):
 
@@ -11,11 +12,16 @@ class RoomRating(Base):
 	reviewer = Column(String(50), nullable=False)
 	reviewer_id = Column(Integer, nullable=False)
 
+	created_at = Column(DateTime, nullable=False)
+	updated_at = Column(DateTime, nullable=False)
+
 	def __init__(self, rating, room_id, reviewer, reviewer_id):
 		self.rating = rating
 		self.room_id = room_id
 		self.reviewer = reviewer
 		self.reviewer_id = reviewer_id
+		self.created_at = datetime.now()
+		self.updated_at = datetime.now()
 
 	def serialize(self):
 		return {
@@ -23,5 +29,7 @@ class RoomRating(Base):
 			'rating': self.rating,
 			'room_id': self.room_id,
 			'reviewer': self.reviewer,
-			'reviewer_id': self.reviewer_id
+			'reviewer_id': self.reviewer_id,
+			'created_at': self.created_at,
+			'updated_at': self.updated_at
 		}

@@ -15,7 +15,38 @@ class RoomDAO:
 
 		return new_room.serialize()
 
+
 	@classmethod
 	def get_room(cls, db, room_id):
 		room = db.query(Room).get(room_id)
 		return room.serialize()
+
+
+	@classmethod
+	def delete_room(cls, db, room_id):
+		room = db.delete(Room.id == room_id)
+		db.commit()
+
+		return room.serialize()
+
+	
+	@classmethod
+	def update_room(cls, db, room_id, update_args):
+		room = db.query(Room).get(room_id)
+
+		# we should see if is necessary to update
+		# owner and owner id. May be this should
+		# be a restricted method
+
+		print(update_args)
+
+		if update_args.type is not None:
+			room.type = update_args.type
+
+		if update_args.price_per_day is not None:
+			room.price_per_day = update_args.price_per_day
+	       
+		db.commit()
+
+		return room.serialize()
+

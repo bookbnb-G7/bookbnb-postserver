@@ -1,5 +1,6 @@
-from typing import List
+from datetime import datetime
 from pydantic import BaseModel
+from typing import List, Optional
 
 class RoomReviewSchema(BaseModel):
 	review: str 
@@ -9,7 +10,12 @@ class RoomReviewSchema(BaseModel):
 class RoomReviewDB(RoomReviewSchema):
 	id: int
 	room_id: int
+	created_at: datetime
+	updated_at: datetime
 
 class RoomReviewList(BaseModel):
 	room_id: int
 	reviews: List[RoomReviewDB]
+
+class RoomReviewPatch(BaseModel):
+	review: Optional[str] = None

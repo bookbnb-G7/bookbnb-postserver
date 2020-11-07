@@ -1,5 +1,6 @@
 from app.db import Base 
-from sqlalchemy import Column, String, Integer, Float
+from datetime import datetime
+from sqlalchemy import Column, String, Integer, Float, DateTime
 
 class Room(Base):
 
@@ -11,10 +12,15 @@ class Room(Base):
 	owner_id = Column(Integer, nullable=False)
 	price_per_day = Column(Float, nullable=False)
 
+	created_at = Column(DateTime, nullable=False)
+	updated_at = Column(DateTime, nullable=False)
+
 	def __init__(self, type, owner, owner_id, price_per_day):
 		self.type = type
 		self.owner = owner
 		self.owner_id = owner_id
+		self.created_at = datetime.now()
+		self.updated_at = datetime.now()
 		self.price_per_day = price_per_day
 
 	def serialize(self):
@@ -23,7 +29,9 @@ class Room(Base):
 			'type': self.type,
 			'owner': self.owner,
 			'owner_id': self.owner_id,
-			'price_per_day': self.price_per_day
+			'price_per_day': self.price_per_day,
+			'created_at': self.created_at,
+			'updated_at': self.updated_at
 		}
 
 
