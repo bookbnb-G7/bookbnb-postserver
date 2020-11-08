@@ -38,7 +38,9 @@ class RoomRatingDAO:
 
 	@classmethod
 	def delete_room_rating(cls, db, room_id, rating_id):
-		room_rating = db.delete(RoomRating.id == room_rating_id)
+		room_rating = db.query(RoomRating).get(rating_id)
+		
+		db.delete(room_rating)
 		db.commit()
 
 		# this should return an error in case of  

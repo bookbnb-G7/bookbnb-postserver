@@ -8,7 +8,7 @@ from app.api.models.room_review_model import RoomReviewSchema, RoomReviewDB, \
 
 router = APIRouter()
 
-@router.post('', response_model=RoomReviewDB, status_code=201)
+@router.post('/', response_model=RoomReviewDB, status_code=201)
 async def review_room(payload: RoomReviewSchema, room_id: int, db: Session = Depends(get_db)):
 	room_review_info = RoomReviewDAO.add_new_room_review(db, room_id, payload)
 	return room_review_info

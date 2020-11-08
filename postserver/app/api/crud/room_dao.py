@@ -38,9 +38,7 @@ class RoomDAO:
 
 		# we should see if is necessary to update
 		# owner and owner id. May be this should
-		# be a restricted method
-
-		print(update_args)
+		# be a restricted method)
 
 		if update_args.type is not None:
 			room.type = update_args.type
