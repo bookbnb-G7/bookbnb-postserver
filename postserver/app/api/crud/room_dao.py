@@ -24,7 +24,9 @@ class RoomDAO:
 
 	@classmethod
 	def delete_room(cls, db, room_id):
-		room = db.delete(Room.id == room_id)
+		room = db.query(Room).get(room_id)
+		
+		db.delete(room)
 		db.commit()
 
 		return room.serialize()
