@@ -50,3 +50,13 @@ class RoomDAO:
 
 		return room.serialize()
 
+
+	@classmethod
+	def get_all_rooms(cls, db):
+		rooms_list = db.query(Room).all()
+
+		serialized_list = []
+		for room in rooms_list:
+			serialized_list.append(room.serialize())
+
+		return serialized_list
