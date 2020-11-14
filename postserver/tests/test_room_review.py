@@ -149,6 +149,7 @@ def test_get_all_existing_room_reviews_from_room(test_app):
     assert snd_review['reviewer_id'] == test_another_room_review_payload['reviewer_id']
 
     # controlas that review list metadata is correct
+    assert response_json['amount'] == 2
     assert response_json['room_id'] == room_id
 
 

@@ -14,6 +14,7 @@ class RoomRatingDB(RoomRatingSchema):
 	updated_at: datetime
 
 class RoomRatingList(BaseModel):
+	amount: int
 	room_id: int
 	ratings: List[RoomRatingDB]
 

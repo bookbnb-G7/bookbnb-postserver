@@ -16,7 +16,8 @@ async def review_room(payload: RoomReviewSchema, room_id: int, db: Session = Dep
 @router.get('/', response_model=RoomReviewList, status_code=200)
 async def get_all_room_reviews(room_id: int,  db: Session = Depends(get_db)):
 	room_reviews_list = RoomReviewDAO.get_all_reviews(db, room_id)
-	return { 'room_id':room_id, 'reviews': room_reviews_list }
+	amount_reviews = len(room_reviews_list)
+	return { 'room_id':room_id, 'amount': amount_reviews, 'reviews': room_reviews_list }
 
 @router.get('/{review_id}', response_model=RoomReviewDB, status_code=200)
 async def get_room_review(room_id: int, review_id: int, db: Session = Depends(get_db)):

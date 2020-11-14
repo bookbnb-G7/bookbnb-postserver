@@ -14,6 +14,7 @@ class RoomReviewDB(RoomReviewSchema):
 	updated_at: datetime
 
 class RoomReviewList(BaseModel):
+	amount: int
 	room_id: int
 	reviews: List[RoomReviewDB]
 
