@@ -1,5 +1,5 @@
 from app.model.room import Room
-
+from app.errors.error import NotFoundError
 
 class RoomDAO:
 
@@ -19,12 +19,19 @@ class RoomDAO:
 	@classmethod
 	def get_room(cls, db, room_id):
 		room = db.query(Room).get(room_id)
+
+		if room is None: 
+			raise NotFoundError()
+
 		return room.serialize()
 
 
 	@classmethod
 	def delete_room(cls, db, room_id):
 		room = db.query(Room).get(room_id)
+
+		if room is None:
+			raise NotFoundError()
 		
 		db.delete(room)
 		db.commit()
@@ -35,6 +42,9 @@ class RoomDAO:
 	@classmethod
 	def update_room(cls, db, room_id, update_args):
 		room = db.query(Room).get(room_id)
+
+		if room is None:
+			raise NotFoundError()
 
 		# we should see if is necessary to update
 		# owner and owner id. May be this should
