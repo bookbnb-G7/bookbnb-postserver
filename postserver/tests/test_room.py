@@ -63,7 +63,7 @@ def test_get_non_existent_room(test_app):
 
     response_json = response.json() 
 
-    assert response_json['error'] == 'not found'
+    assert response_json['error'] == 'room not found'
 
 
 def test_patch_existing_room(test_app):
@@ -129,7 +129,7 @@ def test_patch_non_existent_room(test_app):
 
     response_json = response.json() 
 
-    assert response_json['error'] == 'not found'
+    assert response_json['error'] == 'room not found'
 
 
 def test_get_all_existing_room_ratings_from_room(test_app):
@@ -217,5 +217,5 @@ def test_delete_not_existent_room(test_app):
 
     response_json = response.json() 
 
-    assert response_json['error'] == 'not found'
+    assert response_json['error'] == 'room not found'
 

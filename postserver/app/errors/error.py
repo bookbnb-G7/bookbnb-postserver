@@ -1,8 +1,8 @@
 from starlette.exceptions import HTTPException
 
 class NotFoundError(HTTPException):
-    message = 'not found'
 
-    def __init__(self):
-    	super().__init__(status_code=404,
-    					 detail=self.message)
+    def __init__(self, item):
+        message = f'{item} not found'
+        super().__init__(status_code=404, 
+                         detail=message)

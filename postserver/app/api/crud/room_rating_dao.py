@@ -1,9 +1,14 @@
+from app.api.crud.room_dao import RoomDAO
+from app.errors.error import NotFoundError
 from app.model.room_rating import RoomRating
 
 class RoomRatingDAO:
 
 	@classmethod
 	def add_new_room_rating(cls, db, room_id, room_rating_args):
+		if not RoomDAO.room_is_present(db, room_id):
+			raise NotFoundError('room')
+
 		new_room_rating = RoomRating(rating=room_rating_args.rating,
 									 room_id=room_id,
 			                         reviewer=room_rating_args.reviewer,
@@ -28,7 +33,13 @@ class RoomRatingDAO:
 
 	@classmethod
 	def get_room_rating(cls, db, room_id, rating_id):
+		if not RoomDAO.room_is_present(db, room_id):
+			raise NotFoundError('room')
+
 		room_rating = db.query(RoomRating).get(rating_id)
+
+		if room_rating is None:
+			raise NotFoundError('room rating')
 
 		# this should return an error in case of  
 		# the rating do not for the specified room
@@ -38,7 +49,13 @@ class RoomRatingDAO:
 
 	@classmethod
 	def delete_room_rating(cls, db, room_id, rating_id):
+		if not RoomDAO.room_is_present(db, room_id):
+			raise NotFoundError('room')
+
 		room_rating = db.query(RoomRating).get(rating_id)
+
+		if room_rating is None:
+			raise NotFoundError('room rating')
 		
 		db.delete(room_rating)
 		db.commit()
@@ -55,7 +72,13 @@ class RoomRatingDAO:
 
 	@classmethod
 	def update_room_rating(cls, db, room_id, rating_id, update_args):
+		if not RoomDAO.room_is_present(db, room_id):
+			raise NotFoundError('room')
+
 		room_rating = db.query(RoomRating).get(rating_id)
+
+		if room_rating is None:
+			raise NotFoundError('room rating')
 
 		# we should see if is necessary to update
 		# owner and owner id. May be this should
