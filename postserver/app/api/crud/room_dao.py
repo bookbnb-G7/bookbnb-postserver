@@ -1,5 +1,5 @@
 from app.model.room import Room
-from app.errors.error import NotFoundError
+from app.errors.http_error import NotFoundError
 
 class RoomDAO:
 	@classmethod

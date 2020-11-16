@@ -195,7 +195,6 @@ def test_patch_a_room_rating_from_a_not_existing_room(test_app):
     assert response_json['error'] == 'room not found' 
 
 
-
 def test_get_all_existing_room_ratings_from_room(test_app):
     rating_1_id = 1
 

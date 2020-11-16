@@ -1,6 +1,7 @@
 from app.api.crud.room_dao import RoomDAO
-from app.errors.error import NotFoundError
 from app.model.room_rating import RoomRating
+from app.errors.http_error import NotFoundError
+from app.errors.bookbnb_error import NoRelationError
 
 class RoomRatingDAO:
 
@@ -41,6 +42,9 @@ class RoomRatingDAO:
 		if room_rating is None:
 			raise NotFoundError('room rating')
 
+		if not room_rating.is_from(room_id):
+			raise NoRelationError('room', 'room rating')
+
 		# this should return an error in case of  
 		# the rating do not for the specified room
 
@@ -56,7 +60,8 @@ class RoomRatingDAO:
 
 		if room_rating is None:
 			raise NotFoundError('room rating')
-		
+
+
 		db.delete(room_rating)
 		db.commit()
 
