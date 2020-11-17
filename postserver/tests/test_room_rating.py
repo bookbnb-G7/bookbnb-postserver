@@ -53,6 +53,21 @@ def test_rate_an_existing_room(test_app):
     assert response_json['reviewer_id'] == test_room_rating_payload['reviewer_id']
 
 
+def test_rate_an_non_existent_room(test_app):   
+    not_existent_room_id = 25
+
+    response = test_app.post(
+        '/rooms/' + str(not_existent_room_id) + '/ratings/',
+        data = json.dumps(test_room_rating_payload)
+    )
+
+    assert response.status_code == 404
+
+    response_json = response.json()
+    
+    assert response_json['error'] == 'room not found' 
+
+
 def test_get_an_existing_room_rating(test_app):
     rating_id = 1
 
@@ -68,6 +83,35 @@ def test_get_an_existing_room_rating(test_app):
     assert response_json['rating'] == test_room_rating_payload['rating']
     assert response_json['reviewer'] == test_room_rating_payload['reviewer']
     assert response_json['reviewer_id'] == test_room_rating_payload['reviewer_id']
+
+
+def test_get_an_non_existent_room_rating(test_app):   
+    not_existent_room_rating_id = 25
+
+    response = test_app.get(
+        '/rooms/' + str(room_id) + '/ratings/' + str(not_existent_room_rating_id),
+    )
+
+    assert response.status_code == 404
+
+    response_json = response.json()
+    
+    assert response_json['error'] == 'room rating not found' 
+
+
+def test_get_a_room_rating_from_a_non_existen_room(test_app):   
+    rating_id = 1
+    not_existent_room_id = 25
+
+    response = test_app.get(
+        '/rooms/' + str(not_existent_room_id) + '/ratings/' + str(rating_id),
+    )
+
+    assert response.status_code == 404
+
+    response_json = response.json()
+    
+    assert response_json['error'] == 'room not found' 
 
 
 def test_patch_an_existing_room_rating(test_app):
@@ -112,6 +156,45 @@ def test_patch_an_existing_room_rating(test_app):
     assert response_json['reviewer_id'] == test_room_rating_payload['reviewer_id']
 
 
+def test_patch_a_non_existent_room_rating(test_app):   
+    not_existent_room_rating_id = 25
+
+    room_rating_patch = {
+        'rating': 0
+    }
+
+    response = test_app.patch(
+        '/rooms/' + str(room_id) + '/ratings/' + str(not_existent_room_rating_id),
+        data = json.dumps(room_rating_patch)
+    )
+
+    assert response.status_code == 404
+
+    response_json = response.json()
+    
+    assert response_json['error'] == 'room rating not found' 
+
+
+def test_patch_a_room_rating_from_a_not_existing_room(test_app):   
+    room_rating_id = 1
+    non_existent_room_id = 25
+
+    room_rating_patch = {
+        'rating': 0
+    }
+
+    response = test_app.patch(
+        '/rooms/' + str(non_existent_room_id) + '/ratings/' + str(room_rating_id),
+        data = json.dumps(room_rating_patch)
+    )
+
+    assert response.status_code == 404
+
+    response_json = response.json()
+    
+    assert response_json['error'] == 'room not found' 
+
+
 def test_get_all_existing_room_ratings_from_room(test_app):
     rating_1_id = 1
 
@@ -154,6 +237,35 @@ def test_get_all_existing_room_ratings_from_room(test_app):
     assert response_json['room_id'] == room_id
 
 
+def test_delete_a_non_existent_room_rating(test_app):   
+    non_existent_room_rating_id = 25
+
+    response = test_app.delete(
+        '/rooms/' + str(room_id) + '/ratings/' + str(non_existent_room_rating_id)
+    )
+
+    assert response.status_code == 404
+
+    response_json = response.json()
+    
+    assert response_json['error'] == 'room rating not found' 
+
+
+def test_delete_a_room_rating_from_a_non_existent_room(test_app):   
+    rating_id = 1
+    non_existent_room_id = 25
+
+    response = test_app.delete(
+        '/rooms/' + str(non_existent_room_id) + '/ratings/' + str(rating_id)
+    )
+
+    assert response.status_code == 404
+
+    response_json = response.json()
+    
+    assert response_json['error'] == 'room not found' 
+
+
 def test_delete_existing_room_ratings(test_app):
     rating_1_id = 1
     rating_2_id = 2
@@ -183,3 +295,4 @@ def test_delete_existing_room_ratings(test_app):
     assert response_json_2['reviewer_id'] == test_another_room_rating_payload['reviewer_id']
 
     _delete_room(test_app)
+

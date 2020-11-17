@@ -33,3 +33,6 @@ class RoomReview(Base):
 			'created_at': self.created_at,
 			'updated_at': self.updated_at
 		}
+
+	def is_from(self, room_id):
+		return self.room_id == room_id

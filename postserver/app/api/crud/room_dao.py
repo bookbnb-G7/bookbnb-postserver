@@ -1,8 +1,7 @@
 from app.model.room import Room
-
+from app.errors.http_error import NotFoundError
 
 class RoomDAO:
-
 	@classmethod
 	def add_new_room(cls, db, room_args): 
 		new_room = Room(type=room_args.type,
@@ -19,12 +18,19 @@ class RoomDAO:
 	@classmethod
 	def get_room(cls, db, room_id):
 		room = db.query(Room).get(room_id)
+
+		if room is None: 
+			raise NotFoundError('room')
+
 		return room.serialize()
 
 
 	@classmethod
 	def delete_room(cls, db, room_id):
 		room = db.query(Room).get(room_id)
+
+		if room is None:
+			raise NotFoundError('room')
 		
 		db.delete(room)
 		db.commit()
@@ -35,6 +41,9 @@ class RoomDAO:
 	@classmethod
 	def update_room(cls, db, room_id, update_args):
 		room = db.query(Room).get(room_id)
+
+		if room is None:
+			raise NotFoundError('room')
 
 		# we should see if is necessary to update
 		# owner and owner id. May be this should
@@ -60,3 +69,9 @@ class RoomDAO:
 			serialized_list.append(room.serialize())
 
 		return serialized_list
+
+
+	@classmethod
+	def room_is_present(cls, db, room_id):
+		room = db.query(Room).get(room_id)
+		return room is not None
