@@ -45,9 +45,6 @@ class RoomRatingDAO:
 		if not room_rating.is_from(room_id):
 			raise NoRelationError('room', 'room rating')
 
-		# this should return an error in case of  
-		# the rating do not for the specified room
-
 		return room_rating.serialize()
 
 
@@ -61,16 +58,11 @@ class RoomRatingDAO:
 		if room_rating is None:
 			raise NotFoundError('room rating')
 
+		if not room_rating.is_from(room_id):
+			raise NoRelationError('room', 'room rating')
 
 		db.delete(room_rating)
 		db.commit()
-
-		# this should return an error in case of  
-		# the rating do not for the specified room
-		# (one way of doing this is to control ID on
-		# DB delete query) 
-		# Ex. (Room.ID == room_id and 
-		#	 RoomRating.id == room_rating_id)
 
 		return room_rating.serialize()
 
@@ -85,10 +77,9 @@ class RoomRatingDAO:
 		if room_rating is None:
 			raise NotFoundError('room rating')
 
-		# we should see if is necessary to update
-		# owner and owner id. May be this should
-		# be a restricted method
-
+		if not room_rating.is_from(room_id):
+			raise NoRelationError('room', 'room rating')
+			
 		if update_args.rating is not None:
 			room_rating.rating = update_args.rating
 

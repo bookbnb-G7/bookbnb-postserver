@@ -52,6 +52,21 @@ def test_review_an_existing_room(test_app):
     assert response_json['reviewer_id'] == test_room_review_payload['reviewer_id']
 
 
+def test_review_an_non_existent_room(test_app):   
+    not_existent_room_id = 25
+
+    response = test_app.post(
+        '/rooms/' + str(not_existent_room_id) + '/reviews/',
+        data = json.dumps(test_room_review_payload)
+    )
+
+    assert response.status_code == 404
+
+    response_json = response.json()
+    
+    assert response_json['error'] == 'room not found' 
+
+
 def test_get_an_existing_room_review(test_app):
     review_id = 1
 
@@ -67,6 +82,35 @@ def test_get_an_existing_room_review(test_app):
     assert response_json['review'] == test_room_review_payload['review']
     assert response_json['reviewer'] == test_room_review_payload['reviewer']
     assert response_json['reviewer_id'] == test_room_review_payload['reviewer_id']
+
+
+def test_get_an_non_existent_room_review(test_app):   
+    not_existent_room_review_id = 25
+
+    response = test_app.get(
+        '/rooms/' + str(room_id) + '/reviews/' + str(not_existent_room_review_id),
+    )
+
+    assert response.status_code == 404
+
+    response_json = response.json()
+    
+    assert response_json['error'] == 'room review not found' 
+
+
+def test_get_a_room_review_from_a_non_existen_room(test_app):   
+    review_id = 1
+    not_existent_room_id = 25
+
+    response = test_app.get(
+        '/rooms/' + str(not_existent_room_id) + '/reviews/' + str(review_id),
+    )
+
+    assert response.status_code == 404
+
+    response_json = response.json()
+    
+    assert response_json['error'] == 'room not found' 
 
 
 def test_patch_an_existing_room_review(test_app):
@@ -111,6 +155,45 @@ def test_patch_an_existing_room_review(test_app):
     assert response_json['reviewer_id'] == test_room_review_payload['reviewer_id']
 
 
+def test_patch_a_non_existent_room_review(test_app):   
+    not_existent_room_review_id = 25
+
+    room_review_patch = {
+        'review': 'buernarda'
+    }
+
+    response = test_app.patch(
+        '/rooms/' + str(room_id) + '/reviews/' + str(not_existent_room_review_id),
+        data = json.dumps(room_review_patch)
+    )
+
+    assert response.status_code == 404
+
+    response_json = response.json()
+    
+    assert response_json['error'] == 'room review not found' 
+
+
+def test_patch_a_room_review_from_a_not_existing_room(test_app):   
+    room_review_id = 1
+    non_existent_room_id = 25
+
+    room_review_patch = {
+        'review': 'buernarda'
+    }
+
+    response = test_app.patch(
+        '/rooms/' + str(non_existent_room_id) + '/reviews/' + str(room_review_id),
+        data = json.dumps(room_review_patch)
+    )
+
+    assert response.status_code == 404
+
+    response_json = response.json()
+    
+    assert response_json['error'] == 'room not found' 
+
+
 def test_get_all_existing_room_reviews_from_room(test_app):
     review_1_id = 1
 
@@ -151,6 +234,35 @@ def test_get_all_existing_room_reviews_from_room(test_app):
     # controlas that review list metadata is correct
     assert response_json['amount'] == 2
     assert response_json['room_id'] == room_id
+
+
+def test_delete_a_non_existent_room_review(test_app):   
+    non_existent_room_review_id = 25
+
+    response = test_app.delete(
+        '/rooms/' + str(room_id) + '/reviews/' + str(non_existent_room_review_id)
+    )
+
+    assert response.status_code == 404
+
+    response_json = response.json()
+    
+    assert response_json['error'] == 'room review not found' 
+
+
+def test_delete_a_room_review_from_a_non_existent_room(test_app):   
+    review_id = 1
+    non_existent_room_id = 25
+
+    response = test_app.delete(
+        '/rooms/' + str(non_existent_room_id) + '/reviews/' + str(review_id)
+    )
+
+    assert response.status_code == 404
+
+    response_json = response.json()
+    
+    assert response_json['error'] == 'room not found' 
 
 
 def test_delete_existing_room_reviews(test_app):
