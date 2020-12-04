@@ -1,77 +1,75 @@
 from app.model.room import Room
 from app.errors.http_error import NotFoundError
 
+
 class RoomDAO:
-	@classmethod
-	def add_new_room(cls, db, room_args): 
-		new_room = Room(type=room_args.type,
-			            owner=room_args.owner,
-			            owner_id=room_args.owner_id,
-			            price_per_day=room_args.price_per_day)
+    @classmethod
+    def add_new_room(cls, db, room_args):
+        new_room = Room(
+            type=room_args.type,
+            owner=room_args.owner,
+            owner_id=room_args.owner_id,
+            price_per_day=room_args.price_per_day,
+        )
 
-		db.add(new_room)
-		db.commit()
+        db.add(new_room)
+        db.commit()
 
-		return new_room.serialize()
+        return new_room.serialize()
 
+    @classmethod
+    def get_room(cls, db, room_id):
+        room = db.query(Room).get(room_id)
 
-	@classmethod
-	def get_room(cls, db, room_id):
-		room = db.query(Room).get(room_id)
+        if room is None:
+            raise NotFoundError("room")
 
-		if room is None: 
-			raise NotFoundError('room')
+        return room.serialize()
 
-		return room.serialize()
+    @classmethod
+    def delete_room(cls, db, room_id):
+        room = db.query(Room).get(room_id)
 
+        if room is None:
+            raise NotFoundError("room")
 
-	@classmethod
-	def delete_room(cls, db, room_id):
-		room = db.query(Room).get(room_id)
+        db.delete(room)
+        db.commit()
 
-		if room is None:
-			raise NotFoundError('room')
-		
-		db.delete(room)
-		db.commit()
+        return room.serialize()
 
-		return room.serialize()
+    @classmethod
+    def update_room(cls, db, room_id, update_args):
+        room = db.query(Room).get(room_id)
 
-	
-	@classmethod
-	def update_room(cls, db, room_id, update_args):
-		room = db.query(Room).get(room_id)
+        if room is None:
+            raise NotFoundError("room")
 
-		if room is None:
-			raise NotFoundError('room')
+        # we should see if is necessary to update
+        # owner and owner id. May be this should
+        # be a restricted method)
 
-		# we should see if is necessary to update
-		# owner and owner id. May be this should
-		# be a restricted method)
+        if update_args.type is not None:
+            room.type = update_args.type
 
-		if update_args.type is not None:
-			room.type = update_args.type
+        if update_args.price_per_day is not None:
+            room.price_per_day = update_args.price_per_day
 
-		if update_args.price_per_day is not None:
-			room.price_per_day = update_args.price_per_day
-	       
-		db.commit()
+        db.commit()
 
-		return room.serialize()
+        return room.serialize()
 
+    @classmethod
+    def get_all_rooms(cls, db):
+        rooms_list = db.query(Room).all()
 
-	@classmethod
-	def get_all_rooms(cls, db):
-		rooms_list = db.query(Room).all()
+        serialized_list = []
+        for room in rooms_list:
+            serialized_list.append(room.serialize())
 
-		serialized_list = []
-		for room in rooms_list:
-			serialized_list.append(room.serialize())
+        return serialized_list
 
-		return serialized_list
-
-
-	@classmethod
-	def room_is_present(cls, db, room_id):
-		room = db.query(Room).get(room_id)
-		return room is not None
+    @classmethod
+    def room_is_present(cls, db, room_id):
+        room = db.query(Room).get(room_id)
+        return room is not None
