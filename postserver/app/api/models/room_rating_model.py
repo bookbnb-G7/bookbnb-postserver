@@ -1,23 +1,27 @@
 from datetime import datetime
-from pydantic import BaseModel
 from typing import List, Optional
 
+from pydantic import BaseModel
+
+
 class RoomRatingSchema(BaseModel):
-	rating: int 
-	reviewer: str
-	reviewer_id: int
+    rating: int
+    reviewer: str
+    reviewer_id: int
+
 
 class RoomRatingDB(RoomRatingSchema):
-	id: int
-	room_id: int
-	created_at: datetime
-	updated_at: datetime
+    id: int
+    room_id: int
+    created_at: datetime
+    updated_at: datetime
+
 
 class RoomRatingList(BaseModel):
-	amount: int
-	room_id: int
-	ratings: List[RoomRatingDB]
+    amount: int
+    room_id: int
+    ratings: List[RoomRatingDB]
+
 
 class RoomRatingPatch(BaseModel):
-	rating: Optional[int] = None
-	
+    rating: Optional[int] = None
