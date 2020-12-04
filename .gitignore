@@ -1,6 +1,10 @@
 # IDE related stuff
 .idea/
 
+# Ignore app.db
+app.db
+postserver/app.db
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
