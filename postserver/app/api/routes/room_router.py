@@ -1,7 +1,7 @@
 from typing import Optional
-from app.services import auth
 from app.db import Session, get_db
 from app.api.crud.room_dao import RoomDAO
+from app.services.auth import auth_service 
 from fastapi import APIRouter, Depends, Header
 from app.api.models.room_model import (RoomDB, 
                                        RoomList, 
@@ -16,7 +16,7 @@ async def create_room(
     payload: RoomSchema, db: Session = Depends(get_db),
     api_key: Optional[str] = Header(None)
 ):
-    auth.verify_apy_key(api_key)
+    auth_service.verify_apy_key(api_key)
     room_info = RoomDAO.add_new_room(db, payload)
     return room_info
 
@@ -26,7 +26,7 @@ async def get_room(
     room_id: int, db: Session = Depends(get_db),
     api_key: Optional[str] = Header(None)
 ):
-    auth.verify_apy_key(api_key)
+    auth_service.verify_apy_key(api_key)
     room_info = RoomDAO.get_room(db, room_id)
     return room_info
 
@@ -36,7 +36,7 @@ async def delete_room(
     room_id: int, db: Session = Depends(get_db),
     api_key: Optional[str] = Header(None)
 ):
-    auth.verify_apy_key(api_key)
+    auth_service.verify_apy_key(api_key)
     room_info = RoomDAO.delete_room(db, room_id)
     return room_info
 
@@ -46,7 +46,7 @@ async def update_room(
     payload: RoomPatch, room_id: int, db: Session = Depends(get_db),
     api_key: Optional[str] = Header(None)
 ):
-    auth.verify_apy_key(api_key)
+    auth_service.verify_apy_key(api_key)
     room_info = RoomDAO.update_room(db, room_id, payload)
     return room_info
 
@@ -55,7 +55,7 @@ async def update_room(
 async def get_all_rooms(db: Session = Depends(get_db),
     api_key: Optional[str] = Header(None)
 ):  
-    auth.verify_apy_key(api_key)
+    auth_service.verify_apy_key(api_key)
     rooms_list = RoomDAO.get_all_rooms(db)
     amount_rooms = len(rooms_list)
     return {"amount": amount_rooms, "rooms": rooms_list}
