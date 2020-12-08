@@ -21,6 +21,7 @@ services:
       - db # first execute database
 
     environment:
+      - API_KEY=ULTRAMEGAFAKEAPIKEY
       - ENVIRONMENT=development
       - DATABASE_URL=sqlite:///./app.db
 

@@ -1,12 +1,10 @@
-import tempfile
-
 import pytest
-from fastapi.testclient import TestClient
+import tempfile
+from app.main import app
+from app.db import Base, get_db
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-
-from app.db import Base, get_db
-from app.main import app
+from fastapi.testclient import TestClient
 
 
 @pytest.fixture(scope="session", autouse=True)

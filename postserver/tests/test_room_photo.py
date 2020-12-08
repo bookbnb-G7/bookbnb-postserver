@@ -17,6 +17,7 @@ test_another_room_photo_payload = {
 }
 
 
+"""
 def _create_room(test_app):
     test_app.post("/rooms/", data=json.dumps(test_room_payload))
 
@@ -114,3 +115,4 @@ def test_delete_existing_room_photos(test_app):
     )
 
     _delete_room(test_app)
+"""

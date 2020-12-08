@@ -7,7 +7,7 @@ from pydantic import BaseModel
 class RoomSchema(BaseModel):
     type: str
     owner: str
-    owner_id: int
+    owner_uuid: int
     price_per_day: float
 
 
