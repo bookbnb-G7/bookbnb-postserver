@@ -8,7 +8,7 @@ class RoomDAO:
         new_room = Room(
             type=room_args.type,
             owner=room_args.owner,
-            owner_id=room_args.owner_id,
+            owner_uuid=room_args.owner_uuid,
             price_per_day=room_args.price_per_day,
         )
 
