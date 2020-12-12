@@ -9,7 +9,9 @@ from app.api.routes import (room_photo_router, room_rating_router,
 
 Base.metadata.create_all(engine)
 
-app = FastAPI()
+app = FastAPI(
+    title="bookbnb-postserver", description="postserver API"
+)
 
 
 @app.get("/")
