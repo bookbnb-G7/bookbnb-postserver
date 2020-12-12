@@ -1,5 +1,7 @@
 import json
 
+room_id = 1
+
 test_room_payload = {
     "type": "traphouse",
     "owner": "facu, el crack",
@@ -7,30 +9,37 @@ test_room_payload = {
     "price_per_day": 1800.0,
 }
 
-room_id = 1
-
-test_room_photo_payload = {"url": "www.queganasdesalirdejoda.com", "firebase_id": 1}
+test_room_photo_payload = {
+    "url": "www.queganasdesalirdejoda.com",
+    "firebase_id": 1
+}
 
 test_another_room_photo_payload = {
     "url": "www.sigoconganasdesalirdejoda.com",
     "firebase_id": 2,
 }
 
+header = {"api-key": "ULTRAMEGAFAKEAPIKEY"}
 
-"""
+
 def _create_room(test_app):
-    test_app.post("/rooms/", data=json.dumps(test_room_payload))
+    test_app.post(url="/rooms/",
+                  headers=header,
+                  data=json.dumps(test_room_payload))
 
 
 def _delete_room(test_app):
-    test_app.delete("/rooms/" + str(room_id))
+    test_app.delete(url="/rooms/" + str(room_id),
+                    headers=header)
 
 
 def test_upload_photo_for_existing_room(test_app):
     _create_room(test_app)
 
     response = test_app.post(
-        "/rooms/" + str(room_id) + "/photos/", data=json.dumps(test_room_photo_payload)
+        url="/rooms/" + str(room_id) + "/photos/",
+        headers=header,
+        data=json.dumps(test_room_photo_payload)
     )
 
     assert response.status_code == 201
@@ -42,10 +51,26 @@ def test_upload_photo_for_existing_room(test_app):
     assert response_json["firebase_id"] == test_room_photo_payload["firebase_id"]
 
 
+def test_upload_photo_without_api_key(test_app):
+    response = test_app.post(
+        url="/rooms/" + str(room_id) + "/photos/",
+        data=json.dumps(test_room_photo_payload)
+    )
+
+    assert response.status_code == 400
+
+    response_json = response.json()
+
+    assert response_json["error"] == "Revoked API key"
+
+
+
 def test_get_existing_photo_from_room(test_app):
     firebase_id = test_room_photo_payload["firebase_id"]
 
-    response = test_app.get("/rooms/" + str(room_id) + "/photos/" + str(firebase_id))
+    response = test_app.get(
+        url="/rooms/" + str(room_id) + "/photos/" + str(firebase_id),
+        headers=header)
 
     assert response.status_code == 200
 
@@ -58,11 +83,15 @@ def test_get_existing_photo_from_room(test_app):
 
 def test_get_all_photos_from_room(test_app):
     test_app.post(
-        "/rooms/" + str(room_id) + "/photos/",
+        url="/rooms/" + str(room_id) + "/photos/",
+        headers=header,
         data=json.dumps(test_another_room_photo_payload),
     )
 
-    response = test_app.get("/rooms/" + str(room_id) + "/photos/")
+    response = test_app.get(
+        url="/rooms/" + str(room_id) + "/photos/",
+        headers=header
+    )
 
     assert response.status_code == 200
 
@@ -91,11 +120,13 @@ def test_delete_existing_room_photos(test_app):
     room_photo_2_id = 2
 
     response_1 = test_app.delete(
-        "/rooms/" + str(room_id) + "/photos/" + str(room_photo_1_id),
+        url="/rooms/" + str(room_id) + "/photos/" + str(room_photo_1_id),
+        headers=header
     )
 
     response_2 = test_app.delete(
-        "/rooms/" + str(room_id) + "/photos/" + str(room_photo_2_id),
+        url="/rooms/" + str(room_id) + "/photos/" + str(room_photo_2_id),
+        headers=header
     )
 
     assert response_1.status_code == 200
@@ -111,8 +142,9 @@ def test_delete_existing_room_photos(test_app):
     assert response_json_2["id"] == 2
     assert response_json_2["url"] == test_another_room_photo_payload["url"]
     assert (
-        response_json_2["firebase_id"] == test_another_room_photo_payload["firebase_id"]
+            response_json_2["firebase_id"] == test_another_room_photo_payload["firebase_id"]
     )
 
     _delete_room(test_app)
-"""
+
+

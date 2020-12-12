@@ -1,12 +1,9 @@
-from datetime import datetime
-
-from sqlalchemy import Column, DateTime, Float, Integer, String
-
 from app.db import Base
+from datetime import datetime
+from sqlalchemy import Column, DateTime, Float, Integer, String
 
 
 class Room(Base):
-
     __tablename__ = "rooms"
 
     id = Column(Integer, primary_key=True)
@@ -14,7 +11,7 @@ class Room(Base):
     owner = Column(String(255), nullable=False)
     price_per_day = Column(Float, nullable=False)
     owner_uuid = Column(String(255), nullable=False)
-    
+
     created_at = Column(DateTime, nullable=False)
     updated_at = Column(DateTime, nullable=False)
 
@@ -34,7 +31,7 @@ class Room(Base):
             "owner": self.owner,
             "owner_uuid": self.owner_uuid,
             "price_per_day": self.price_per_day,
-            
+
             "created_at": self.created_at,
             "updated_at": self.updated_at,
         }
