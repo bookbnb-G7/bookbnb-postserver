@@ -1,6 +1,5 @@
-from datetime import datetime
 from typing import List
-
+from datetime import datetime
 from pydantic import BaseModel
 
 
@@ -11,9 +10,7 @@ class RoomPhotoSchema(BaseModel):
 
 class RoomPhotoDB(RoomPhotoSchema):
     id: int
-    url: str
     room_id: int
-    firebase_id: int
     created_at: datetime
     updated_at: datetime
 

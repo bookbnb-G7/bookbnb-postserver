@@ -1,9 +1,11 @@
 import json
 
+room_id = 1
+
 test_room_payload = {
     "type": "traphouse",
     "owner": "facu, el crack",
-    "owner_id": 1,
+    "owner_uuid": 1,
     "price_per_day": 1800.0,
 }
 
@@ -19,23 +21,26 @@ test_another_room_rating_payload = {
     "reviewer_id": 2,
 }
 
-room_id = 1
+header = {"api-key": "ULTRAMEGAFAKEAPIKEY"}
 
 
-"""
 def _create_room(test_app):
-    test_app.post("/rooms/", data=json.dumps(test_room_payload))
+    test_app.post(url="/rooms/",
+                  headers=header,
+                  data=json.dumps(test_room_payload))
 
 
 def _delete_room(test_app):
-    test_app.delete("/rooms/" + str(room_id))
+    test_app.delete(url="/rooms/" + str(room_id),
+                    headers=header)
 
 
 def test_rate_an_existing_room(test_app):
     _create_room(test_app)
 
     response = test_app.post(
-        "/rooms/" + str(room_id) + "/ratings/",
+        url="/rooms/" + str(room_id) + "/ratings/",
+        headers=header,
         data=json.dumps(test_room_rating_payload),
     )
 
@@ -49,11 +54,26 @@ def test_rate_an_existing_room(test_app):
     assert response_json["reviewer_id"] == test_room_rating_payload["reviewer_id"]
 
 
+def test_rate_a_room_without_api_key(test_app):
+    response = test_app.post(
+        url="/rooms/" + str(room_id) + "/ratings/",
+        data=json.dumps(test_room_rating_payload),
+    )
+
+    assert response.status_code == 400
+
+    response_json = response.json()
+
+    assert response_json["error"] == "Revoked API key"
+
+
+
 def test_rate_an_non_existent_room(test_app):
     not_existent_room_id = 25
 
     response = test_app.post(
-        "/rooms/" + str(not_existent_room_id) + "/ratings/",
+        url="/rooms/" + str(not_existent_room_id) + "/ratings/",
+        headers=header,
         data=json.dumps(test_room_rating_payload),
     )
 
@@ -68,7 +88,8 @@ def test_get_an_existing_room_rating(test_app):
     rating_id = 1
 
     response = test_app.get(
-        "/rooms/" + str(room_id) + "/ratings/" + str(rating_id),
+        url="/rooms/" + str(room_id) + "/ratings/" + str(rating_id),
+        headers=header
     )
 
     assert response.status_code == 200
@@ -85,7 +106,8 @@ def test_get_an_non_existent_room_rating(test_app):
     not_existent_room_rating_id = 25
 
     response = test_app.get(
-        "/rooms/" + str(room_id) + "/ratings/" + str(not_existent_room_rating_id),
+        url="/rooms/" + str(room_id) + "/ratings/" + str(not_existent_room_rating_id),
+        headers=header
     )
 
     assert response.status_code == 404
@@ -100,7 +122,8 @@ def test_get_a_room_rating_from_a_non_existen_room(test_app):
     not_existent_room_id = 25
 
     response = test_app.get(
-        "/rooms/" + str(not_existent_room_id) + "/ratings/" + str(rating_id),
+        url="/rooms/" + str(not_existent_room_id) + "/ratings/" + str(rating_id),
+        headers=header
     )
 
     assert response.status_code == 404
@@ -116,7 +139,8 @@ def test_patch_an_existing_room_rating(test_app):
     room_rating_patch = {"rating": 0}
 
     response = test_app.patch(
-        "/rooms/" + str(room_id) + "/ratings/" + str(rating_id),
+        url="/rooms/" + str(room_id) + "/ratings/" + str(rating_id),
+        headers=header,
         data=json.dumps(room_rating_patch),
     )
 
@@ -134,7 +158,8 @@ def test_patch_an_existing_room_rating(test_app):
     room_rating_reset_patch = {"rating": test_room_rating_payload["rating"]}
 
     response = test_app.patch(
-        "/rooms/" + str(room_id) + "/ratings/" + str(rating_id),
+        url="/rooms/" + str(room_id) + "/ratings/" + str(rating_id),
+        headers=header,
         data=json.dumps(room_rating_reset_patch),
     )
 
@@ -154,8 +179,9 @@ def test_patch_a_non_existent_room_rating(test_app):
     room_rating_patch = {"rating": 0}
 
     response = test_app.patch(
-        "/rooms/" + str(room_id) + "/ratings/" + str(not_existent_room_rating_id),
-        data=json.dumps(room_rating_patch),
+        url="/rooms/" + str(room_id) + "/ratings/" + str(not_existent_room_rating_id),
+        headers=header,
+        data=json.dumps(room_rating_patch)
     )
 
     assert response.status_code == 404
@@ -172,7 +198,8 @@ def test_patch_a_room_rating_from_a_not_existing_room(test_app):
     room_rating_patch = {"rating": 0}
 
     response = test_app.patch(
-        "/rooms/" + str(non_existent_room_id) + "/ratings/" + str(room_rating_id),
+        url="/rooms/" + str(non_existent_room_id) + "/ratings/" + str(room_rating_id),
+        headers=header,
         data=json.dumps(room_rating_patch),
     )
 
@@ -185,16 +212,17 @@ def test_patch_a_room_rating_from_a_not_existing_room(test_app):
 
 def test_get_all_existing_room_ratings_from_room(test_app):
     # add another rating to the existing room
-
-    response = test_app.post(
-        "/rooms/" + str(room_id) + "/ratings/",
-        data=json.dumps(test_another_room_rating_payload),
+    test_app.post(
+        url="/rooms/" + str(room_id) + "/ratings/",
+        headers=header,
+        data=json.dumps(test_another_room_rating_payload)
     )
 
     # get all ratings
 
     response = test_app.get(
-        "/rooms/" + str(room_id) + "/ratings",
+        url="/rooms/" + str(room_id) + "/ratings",
+        headers=header
     )
 
     assert response.status_code == 200
@@ -225,7 +253,8 @@ def test_delete_a_non_existent_room_rating(test_app):
     non_existent_room_rating_id = 25
 
     response = test_app.delete(
-        "/rooms/" + str(room_id) + "/ratings/" + str(non_existent_room_rating_id)
+        url="/rooms/" + str(room_id) + "/ratings/" + str(non_existent_room_rating_id),
+        headers=header
     )
 
     assert response.status_code == 404
@@ -240,7 +269,8 @@ def test_delete_a_room_rating_from_a_non_existent_room(test_app):
     non_existent_room_id = 25
 
     response = test_app.delete(
-        "/rooms/" + str(non_existent_room_id) + "/ratings/" + str(rating_id)
+        url="/rooms/" + str(non_existent_room_id) + "/ratings/" + str(rating_id),
+        headers=header
     )
 
     assert response.status_code == 404
@@ -255,11 +285,13 @@ def test_delete_existing_room_ratings(test_app):
     rating_2_id = 2
 
     response_1 = test_app.delete(
-        "/rooms/" + str(room_id) + "/ratings/" + str(rating_1_id),
+        url="/rooms/" + str(room_id) + "/ratings/" + str(rating_1_id),
+        headers=header
     )
 
     response_2 = test_app.delete(
-        "/rooms/" + str(room_id) + "/ratings/" + str(rating_2_id),
+        url="/rooms/" + str(room_id) + "/ratings/" + str(rating_2_id),
+        headers=header
     )
 
     assert response_1.status_code == 200
@@ -276,10 +308,6 @@ def test_delete_existing_room_ratings(test_app):
     assert response_json_2["id"] == 2
     assert response_json_2["rating"] == test_another_room_rating_payload["rating"]
     assert response_json_2["reviewer"] == test_another_room_rating_payload["reviewer"]
-    assert (
-        response_json_2["reviewer_id"]
-        == test_another_room_rating_payload["reviewer_id"]
-    )
+    assert response_json_2["reviewer_id"] == test_another_room_rating_payload["reviewer_id"]
 
     _delete_room(test_app)
-"""

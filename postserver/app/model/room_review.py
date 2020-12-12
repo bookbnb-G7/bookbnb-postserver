@@ -1,8 +1,6 @@
-from datetime import datetime
-
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
-
 from app.db import Base
+from datetime import datetime
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 
 
 class RoomReview(Base):
