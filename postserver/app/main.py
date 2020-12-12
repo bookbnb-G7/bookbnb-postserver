@@ -20,19 +20,19 @@ async def pong():
 
 
 @app.exception_handler(HTTPException)
-async def http_exception_handler(request, exc):
+async def http_exception_handler(_request, exc):
     error = {"error": exc.detail}
     return JSONResponse(status_code=exc.status_code, content=error)
 
 
 @app.exception_handler(BookbnbException)
-async def bookbnb_exception_handler(request, exc):
+async def bookbnb_exception_handler(_request, exc):
     error = {"error": exc.detail}
     return JSONResponse(status_code=exc.status_code, content=error)
 
 
 @app.exception_handler(AuthException)
-async def auth_exception_handler(request, exc):
+async def auth_exception_handler(_request, exc):
     error = {"error": exc.detail}
     return JSONResponse(status_code=exc.status_code, content=error)
 
