@@ -7,11 +7,6 @@ class AuthService:
         self.api_key = os.environ.get('API_KEY')
 
     def verify_apy_key(self, api_key):
-
-        print(api_key == self.api_key)
-        print(os.environ.get('API_KEY'))
-        print(api_key)
-
         if api_key == self.api_key:
             return True
         else:
