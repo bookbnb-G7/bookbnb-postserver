@@ -20,4 +20,5 @@ class RoomBookingDB(RoomBookingSchema):
 
 class RoomBookingList(BaseModel):
     amount: int
-    rooms: List[RoomBookingDB]
+    room_id: int
+    bookings: List[RoomBookingDB]

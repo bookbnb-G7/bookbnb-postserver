@@ -1,5 +1,4 @@
-from datetime import date
-from app.model.room import Room
+from app.api.crud.room_dao import RoomDAO
 from app.model.room_booking import RoomBooking
 from app.errors.http_error import NotFoundError
 from app.errors.bookbnb_error import RoomAlreadyBookedError, NoRelationError
@@ -8,10 +7,10 @@ from app.errors.bookbnb_error import RoomAlreadyBookedError, NoRelationError
 class RoomBookingDAO:
     @classmethod
     def add_new_room_booking(cls, db, room_id, room_booking_args):
-        room = db.query(Room).get(room_id)
-
-        if room is None:
+        if not RoomDAO.room_is_present(db, room_id):
             raise NotFoundError("room")
+
+        room = RoomDAO.get_room(db, room_id)
 
         # add validation about capacity
 
@@ -30,7 +29,7 @@ class RoomBookingDAO:
             raise RoomAlreadyBookedError()
 
         booking_days = (booking_ends - booking_begins).days
-        total_price = booking_days * room.price_per_day
+        total_price = booking_days * room['price_per_day']
 
         new_room_booking = RoomBooking(
             room_id=room_id,
@@ -48,12 +47,11 @@ class RoomBookingDAO:
 
     @classmethod
     def get_room_booking(cls, db, room_id, booking_id):
-        room = db.query(Room).get(room_id)
-
-        if room is None:
+        if not RoomDAO.room_is_present(db, room_id):
             raise NotFoundError("room")
 
-        room_booking = db.query(RoomBooking).get(booking_id)
+        room_booking = db.query(RoomBooking)\
+                         .get(booking_id)
 
         if room_booking is None:
             raise NotFoundError("room booking")
@@ -64,48 +62,34 @@ class RoomBookingDAO:
         return room_booking.serialize()
 
     @classmethod
-    def delete_room_booking(cls, db, room_id):
-        room = db.query(Room).get(room_id)
-
-        if room is None:
+    def get_all_bookings(cls, db, room_id):
+        if not RoomDAO.room_is_present(db, room_id):
             raise NotFoundError("room")
 
-        db.delete(room)
+        room_bookings_list = db.query(RoomBooking)\
+                               .filter(RoomBooking.room_id == room_id)
+
+        serialized_list = []
+        for booking in room_bookings_list:
+            serialized_list.append(booking.serialize())
+
+        return serialized_list
+
+    @classmethod
+    def delete_room_booking(cls, db, room_id, booking_id):
+        if not RoomDAO.room_is_present(db, room_id):
+            raise NotFoundError("room")
+
+        room_booking = db.query(RoomBooking)\
+                         .get(booking_id)
+
+        if room_booking is None:
+            raise NotFoundError("room booking")
+
+        if not room_booking.is_from(room_id):
+            raise NoRelationError("room", "room booking")
+
+        db.delete(room_booking)
         db.commit()
 
-        return room.serialize()
-
-    @classmethod
-    def get_all_room_bookings(cls, db):
-        rooms_list = db.query(Room).all()
-
-        serialized_list = []
-        for room in rooms_list:
-            serialized_list.append(room.serialize())
-
-        return serialized_list
-
-    @classmethod
-    def get_all_room_bookings_from_user(cls, db):
-        rooms_list = db.query(Room).all()
-
-        serialized_list = []
-        for room in rooms_list:
-            serialized_list.append(room.serialize())
-
-        return serialized_list
-
-    @classmethod
-    def get_all_room_bookings_from_room(cls, db):
-        rooms_list = db.query(Room).all()
-
-        serialized_list = []
-        for room in rooms_list:
-            serialized_list.append(room.serialize())
-
-        return serialized_list
-
-    @classmethod
-    def room_is_present(cls, db, room_id):
-        room = db.query(Room).get(room_id)
-        return room is not None
+        return room_booking.serialize()

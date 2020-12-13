@@ -24,7 +24,12 @@ class RoomRatingDAO:
 
     @classmethod
     def get_all_ratings(cls, db, room_id):
-        rating_list = db.query(RoomRating).filter(room_id == RoomRating.room_id).all()
+        if not RoomDAO.room_is_present(db, room_id):
+            raise NotFoundError("room")
+
+        rating_list = db.query(RoomRating)\
+                        .filter(room_id == RoomRating.room_id)\
+                        .all()
 
         serialized_list = []
         for rating in rating_list:
