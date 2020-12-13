@@ -6,7 +6,7 @@ test_room_payload = {
     "type": "traphouse",
     "owner": "facu, el crack",
     "owner_uuid": 1,
-    "price_per_day": 1800.0,
+    "price_per_day": 1000.0,
 }
 
 test_room_rating_payload = {
@@ -65,7 +65,6 @@ def test_rate_a_room_without_api_key(test_app):
     response_json = response.json()
 
     assert response_json["error"] == "Revoked API key"
-
 
 
 def test_rate_an_non_existent_room(test_app):
