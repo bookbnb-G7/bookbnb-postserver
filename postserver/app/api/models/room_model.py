@@ -9,6 +9,8 @@ class RoomSchema(BaseModel):
     owner: str
     owner_id: int
     price_per_day: float
+    lng: float
+    lat: float
 
 
 class RoomDB(RoomSchema):

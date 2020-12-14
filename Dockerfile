@@ -14,6 +14,8 @@ RUN apt-get -y install git
 # install dependencies
 RUN pip install -r requirements.txt
 
+RUN apt-get -y install libsqlite3-mod-spatialite
+
 # copy app
 COPY . /usr/src/app
 

@@ -5,6 +5,8 @@ test_room_payload = {
     "owner": "facu, el crack",
     "owner_id": 1,
     "price_per_day": 1800.0,
+    "lng": 20.0,
+    "lat": -14.44
 }
 
 test_another_room_payload = {
@@ -12,6 +14,8 @@ test_another_room_payload = {
     "owner": "pejelagarto",
     "owner_id": 2,
     "price_per_day": 15.0,
+    "lng": -3.2,
+    "lat": 27.8
 }
 
 
@@ -29,6 +33,8 @@ def test_create_room(test_app):
     assert response_json["owner"] == test_room_payload["owner"]
     assert response_json["owner_id"] == test_room_payload["owner_id"]
     assert response_json["price_per_day"] == test_room_payload["price_per_day"]
+    assert response_json["lng"] == test_room_payload["lng"]
+    assert response_json["lat"] == test_room_payload["lat"]
 
 
 def test_get_existing_room(test_app):
@@ -45,6 +51,8 @@ def test_get_existing_room(test_app):
     assert response_json["owner"] == test_room_payload["owner"]
     assert response_json["owner_id"] == test_room_payload["owner_id"]
     assert response_json["price_per_day"] == test_room_payload["price_per_day"]
+    assert response_json["lng"] == test_room_payload["lng"]
+    assert response_json["lat"] == test_room_payload["lat"]
 
 
 def test_get_non_existent_room(test_app):
@@ -75,6 +83,8 @@ def test_patch_existing_room(test_app):
     assert response_json["owner"] == test_room_payload["owner"]
     assert response_json["owner_id"] == test_room_payload["owner_id"]
     assert response_json["price_per_day"] == room_patch["price_per_day"]
+    assert response_json["lng"] == test_room_payload["lng"]
+    assert response_json["lat"] == test_room_payload["lat"]
 
     # after that we reset the changes
 
@@ -96,6 +106,8 @@ def test_patch_existing_room(test_app):
     assert response_json["owner"] == test_room_payload["owner"]
     assert response_json["owner_id"] == test_room_payload["owner_id"]
     assert response_json["price_per_day"] == test_room_payload["price_per_day"]
+    assert response_json["lng"] == test_room_payload["lng"]
+    assert response_json["lat"] == test_room_payload["lat"]
 
 
 def test_patch_non_existent_room(test_app):
@@ -138,6 +150,8 @@ def test_get_all_existing_room_ratings_from_room(test_app):
     assert frt_room["owner"] == test_room_payload["owner"]
     assert frt_room["owner_id"] == test_room_payload["owner_id"]
     assert frt_room["price_per_day"] == test_room_payload["price_per_day"]
+    assert frt_room["lng"] == test_room_payload["lng"]
+    assert frt_room["lat"] == test_room_payload["lat"]
 
     # control that second rating is correct
     assert snd_room["id"] == 2
@@ -145,6 +159,8 @@ def test_get_all_existing_room_ratings_from_room(test_app):
     assert snd_room["owner"] == test_another_room_payload["owner"]
     assert snd_room["owner_id"] == test_another_room_payload["owner_id"]
     assert snd_room["price_per_day"] == test_another_room_payload["price_per_day"]
+    assert snd_room["lng"] == test_another_room_payload["lng"]
+    assert snd_room["lat"] == test_another_room_payload["lat"]
 
     # controlas that rating list metadata is correct
     assert response_json["amount"] == 2
@@ -169,6 +185,8 @@ def test_delete_existing_room(test_app):
     assert response_json_1["owner"] == test_room_payload["owner"]
     assert response_json_1["owner_id"] == test_room_payload["owner_id"]
     assert response_json_1["price_per_day"] == test_room_payload["price_per_day"]
+    assert response_json_1["lng"] == test_room_payload["lng"]
+    assert response_json_1["lat"] == test_room_payload["lat"]
 
     assert response_json_2["id"] == room_2_id
     assert response_json_2["type"] == test_another_room_payload["type"]
@@ -177,6 +195,8 @@ def test_delete_existing_room(test_app):
     assert (
         response_json_2["price_per_day"] == test_another_room_payload["price_per_day"]
     )
+    assert response_json_2["lng"] == test_another_room_payload["lng"]
+    assert response_json_2["lat"] == test_another_room_payload["lat"]
 
 
 def test_delete_not_existent_room(test_app):

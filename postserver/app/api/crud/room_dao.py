@@ -10,6 +10,8 @@ class RoomDAO:
             owner=room_args.owner,
             owner_id=room_args.owner_id,
             price_per_day=room_args.price_per_day,
+            lng=room_args.lng,
+            lat=room_args.lat,
         )
 
         db.add(new_room)
