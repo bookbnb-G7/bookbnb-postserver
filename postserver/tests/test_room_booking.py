@@ -7,6 +7,8 @@ test_room_payload = {
     "type": "traphouse",
     "owner": "facu, el crack",
     "owner_uuid": 1,
+    "latitude": 1.0,
+    "longitude": 2.0,
     "price_per_day": 1000.0,
 }
 

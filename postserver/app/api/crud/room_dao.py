@@ -8,6 +8,8 @@ class RoomDAO:
         new_room = Room(
             type=room_args.type,
             owner=room_args.owner,
+            latitude=room_args.latitude,
+            longitude=room_args.longitude,
             owner_uuid=room_args.owner_uuid,
             price_per_day=room_args.price_per_day,
         )
@@ -54,6 +56,12 @@ class RoomDAO:
 
         if update_args.price_per_day is not None:
             room.price_per_day = update_args.price_per_day
+
+        if update_args.latitude is not None:
+            room.latitude = update_args.latitude
+
+        if update_args.longitude is not None:
+            room.longitude = update_args.longitude
 
         db.commit()
 

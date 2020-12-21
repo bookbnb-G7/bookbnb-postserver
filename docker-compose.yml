@@ -21,14 +21,14 @@ services:
       - db # first execute database
 
     environment:
-      - API_KEY=ULTRAMEGAFAKEAPIKEY
       - ENVIRONMENT=development
-      - DATABASE_URL=sqlite:///./app.db
+      - API_KEY=ULTRAMEGAFAKEAPIKEY
+      - DATABASE_URL=postgresql://user:password@bookbnb-postserver_db:5432/postserver_db_test
 
   db:
     container_name: bookbnb-postserver_db
 
-    image: postgres:12.1-alpine
+    image: postgis/postgis
 
     volumes:
       - postgres_data:/var/lib/postgresql/data/
@@ -36,7 +36,6 @@ services:
     environment:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=appserver_db_dev
 
 volumes:
   postgres_data:

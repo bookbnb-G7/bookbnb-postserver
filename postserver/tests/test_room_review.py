@@ -6,6 +6,8 @@ test_room_payload = {
     "type": "traphouse",
     "owner": "facu, el crack",
     "owner_uuid": 1,
+    "latitude": 1.0,
+    "longitude": 2.0,
     "price_per_day": 1800.0,
 }
 
@@ -55,6 +57,8 @@ def test_review_an_existing_room(test_app):
 
 
 def test_review_a_room_without_api_key(test_app):
+    _create_room(test_app)
+
     response = test_app.post(
         url="/rooms/" + str(room_id) + "/reviews/",
         data=json.dumps(test_room_review_payload),
