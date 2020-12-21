@@ -23,7 +23,7 @@ services:
     environment:
       - ENVIRONMENT=development
       - API_KEY=ULTRAMEGAFAKEAPIKEY
-      - DATABASE_URL=postgresql://user:password@bookbnb-postserver_db:5432/postserver_db_test
+      - DATABASE_URL=postgresql://user:password@bookbnb-postserver_db:5432/postserver_db_dev
 
   db:
     container_name: bookbnb-postserver_db
@@ -36,6 +36,7 @@ services:
     environment:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postserver_db_dev
 
 volumes:
   postgres_data:

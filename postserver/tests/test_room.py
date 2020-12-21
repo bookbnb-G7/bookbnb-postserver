@@ -1,4 +1,5 @@
 import json
+import pytest
 
 test_room_payload = {
     "type": "traphouse",
@@ -21,212 +22,206 @@ test_another_room_payload = {
 header = {"api-key": "ULTRAMEGAFAKEAPIKEY"}
 
 
-def test_create_room(test_app):
-    response = test_app.post("/rooms/",
-                             headers=header,
-                             data=json.dumps(test_room_payload))
+@pytest.mark.usefixtures("test_app")
+class TestRoom:
+    def test_create_room(self, test_app):
+        response = test_app.post("/rooms/",
+                                 headers=header,
+                                 data=json.dumps(test_room_payload))
 
-    assert response.status_code == 201
+        assert response.status_code == 201
 
-    response_json = response.json()
+        response_json = response.json()
 
-    assert response_json["id"] == 1
-    assert response_json["type"] == test_room_payload["type"]
-    assert response_json["owner"] == test_room_payload["owner"]
-    assert response_json["latitude"] == test_room_payload["latitude"]
-    assert response_json["longitude"] == test_room_payload["longitude"]
-    assert response_json["owner_uuid"] == test_room_payload["owner_uuid"]
-    assert response_json["price_per_day"] == test_room_payload["price_per_day"]
+        assert response_json["id"] == 1
+        assert response_json["type"] == test_room_payload["type"]
+        assert response_json["owner"] == test_room_payload["owner"]
+        assert response_json["latitude"] == test_room_payload["latitude"]
+        assert response_json["longitude"] == test_room_payload["longitude"]
+        assert response_json["owner_uuid"] == test_room_payload["owner_uuid"]
+        assert response_json["price_per_day"] == test_room_payload["price_per_day"]
 
+    def test_create_room_without_api_key(self, test_app):
+        response = test_app.post("/rooms/",
+                                 data=json.dumps(test_room_payload))
 
-def test_create_room_without_api_key(test_app):
-    response = test_app.post("/rooms/",
-                             data=json.dumps(test_room_payload))
+        assert response.status_code == 400
 
-    assert response.status_code == 400
+        response_json = response.json()
 
-    response_json = response.json()
+        assert response_json["error"] == "Revoked API key"
 
-    assert response_json["error"] == "Revoked API key"
+    def test_get_existing_room(self, test_app):
+        room_id = 1
 
+        response = test_app.get("/rooms/" + str(room_id),
+                                headers=header)
 
-def test_get_existing_room(test_app):
-    room_id = 1
+        assert response.status_code == 200
 
-    response = test_app.get("/rooms/" + str(room_id),
-                            headers=header)
+        response_json = response.json()
 
-    assert response.status_code == 200
+        assert response_json["id"] == 1
+        assert response_json["type"] == test_room_payload["type"]
+        assert response_json["owner"] == test_room_payload["owner"]
+        assert response_json["latitude"] == test_room_payload["latitude"]
+        assert response_json["longitude"] == test_room_payload["longitude"]
+        assert response_json["owner_uuid"] == test_room_payload["owner_uuid"]
+        assert response_json["price_per_day"] == test_room_payload["price_per_day"]
 
-    response_json = response.json()
+    def test_get_non_existent_room(self, test_app):
+        non_existent_room_id = 25
 
-    assert response_json["id"] == 1
-    assert response_json["type"] == test_room_payload["type"]
-    assert response_json["owner"] == test_room_payload["owner"]
-    assert response_json["latitude"] == test_room_payload["latitude"]
-    assert response_json["longitude"] == test_room_payload["longitude"]
-    assert response_json["owner_uuid"] == test_room_payload["owner_uuid"]
-    assert response_json["price_per_day"] == test_room_payload["price_per_day"]
+        response = test_app.get("/rooms/" + str(non_existent_room_id),
+                                headers=header)
 
+        assert response.status_code == 404
 
-def test_get_non_existent_room(test_app):
-    non_existent_room_id = 25
+        response_json = response.json()
 
-    response = test_app.get("/rooms/" + str(non_existent_room_id),
-                            headers=header)
+        assert response_json["error"] == "room not found"
 
-    assert response.status_code == 404
+    def test_patch_existing_room(self, test_app):
+        room_id = 1
 
-    response_json = response.json()
+        room_patch = {
+            "latitude": 3.0,
+            "longitude": 5.0,
+            "type": "mansion",
+            "price_per_day": 5000.0
+        }
 
-    assert response_json["error"] == "room not found"
+        response = test_app.patch("/rooms/" + str(room_id),
+                                  data=json.dumps(room_patch),
+                                  headers=header)
 
+        assert response.status_code == 200
 
-def test_patch_existing_room(test_app):
-    room_id = 1
+        response_json = response.json()
 
-    room_patch = {
-        "latitude": 3.0,
-        "longitude": 5.0,
-        "type": "mansion",
-        "price_per_day": 5000.0
-    }
+        assert response_json["id"] == 1
+        assert response_json["type"] == room_patch["type"]
+        assert response_json["owner"] == test_room_payload["owner"]
+        # assert response_json["latitude"] == room_patch["latitude"]
+        # assert response_json["longitude"] == room_patch["longitude"]
+        assert response_json["price_per_day"] == room_patch["price_per_day"]
+        assert response_json["owner_uuid"] == test_room_payload["owner_uuid"]
 
-    response = test_app.patch("/rooms/" + str(room_id),
-                              data=json.dumps(room_patch),
-                              headers=header)
+        # after that we reset the changes
 
-    assert response.status_code == 200
+        room_reset_patch = {
+            "type": test_room_payload["type"],
+            "latitude": test_room_payload["latitude"],
+            "longitude": test_room_payload["longitude"],
+            "price_per_day": test_room_payload["price_per_day"]
+        }
 
-    response_json = response.json()
+        response = test_app.patch("/rooms/" + str(room_id),
+                                  data=json.dumps(room_reset_patch),
+                                  headers=header)
 
-    assert response_json["id"] == 1
-    assert response_json["type"] == room_patch["type"]
-    assert response_json["owner"] == test_room_payload["owner"]
-    # assert response_json["latitude"] == room_patch["latitude"]
-    # assert response_json["longitude"] == room_patch["longitude"]
-    assert response_json["price_per_day"] == room_patch["price_per_day"]
-    assert response_json["owner_uuid"] == test_room_payload["owner_uuid"]
+        assert response.status_code == 200
 
-    # after that we reset the changes
+        response_json = response.json()
 
-    room_reset_patch = {
-        "type": test_room_payload["type"],
-        "latitude": test_room_payload["latitude"],
-        "longitude": test_room_payload["longitude"],
-        "price_per_day": test_room_payload["price_per_day"]
-    }
+        assert response_json["id"] == 1
+        assert response_json["type"] == test_room_payload["type"]
+        assert response_json["owner"] == test_room_payload["owner"]
+        assert response_json["latitude"] == test_room_payload["latitude"]
+        assert response_json["longitude"] == test_room_payload["longitude"]
+        assert response_json["owner_uuid"] == test_room_payload["owner_uuid"]
+        assert response_json["price_per_day"] == test_room_payload["price_per_day"]
 
-    response = test_app.patch("/rooms/" + str(room_id),
-                              data=json.dumps(room_reset_patch),
-                              headers=header)
+    def test_patch_non_existent_room(self, test_app):
+        non_existent_room_id = 25
 
-    assert response.status_code == 200
+        room_patch = {"type": "mansion", "price_per_day": 5000.0}
 
-    response_json = response.json()
+        response = test_app.patch("/rooms/" + str(non_existent_room_id),
+                                  data=json.dumps(room_patch),
+                                  headers=header)
 
-    assert response_json["id"] == 1
-    assert response_json["type"] == test_room_payload["type"]
-    assert response_json["owner"] == test_room_payload["owner"]
-    assert response_json["latitude"] == test_room_payload["latitude"]
-    assert response_json["longitude"] == test_room_payload["longitude"]
-    assert response_json["owner_uuid"] == test_room_payload["owner_uuid"]
-    assert response_json["price_per_day"] == test_room_payload["price_per_day"]
+        assert response.status_code == 404
 
+        response_json = response.json()
 
-def test_patch_non_existent_room(test_app):
-    non_existent_room_id = 25
+        assert response_json["error"] == "room not found"
 
-    room_patch = {"type": "mansion", "price_per_day": 5000.0}
+    def test_get_all_existing_rooms(self, test_app):
+        # add another room
+        test_app.post("/rooms/",
+                      data=json.dumps(test_another_room_payload),
+                      headers=header)
 
-    response = test_app.patch("/rooms/" + str(non_existent_room_id),
-                              data=json.dumps(room_patch),
-                              headers=header)
+        # get all ratings
+        response = test_app.get("/rooms/",
+                                headers=header)
 
-    assert response.status_code == 404
+        assert response.status_code == 200
 
-    response_json = response.json()
+        response_json = response.json()
 
-    assert response_json["error"] == "room not found"
+        frt_room = response_json["rooms"][0]
+        snd_room = response_json["rooms"][1]
 
+        # control that first rating is correct
+        assert frt_room["id"] == 1
+        assert frt_room["type"] == test_room_payload["type"]
+        assert frt_room["owner"] == test_room_payload["owner"]
+        assert frt_room["latitude"] == test_room_payload["latitude"]
+        assert frt_room["longitude"] == test_room_payload["longitude"]
+        assert frt_room["owner_uuid"] == test_room_payload["owner_uuid"]
+        assert frt_room["price_per_day"] == test_room_payload["price_per_day"]
 
-def test_get_all_existing_rooms(test_app):
-    # add another room
-    test_app.post("/rooms/",
-                  data=json.dumps(test_another_room_payload),
-                  headers=header)
+        # control that second rating is correct
+        assert snd_room["id"] == 2
+        assert snd_room["type"] == test_another_room_payload["type"]
+        assert snd_room["owner"] == test_another_room_payload["owner"]
+        assert snd_room["latitude"] == test_another_room_payload["latitude"]
+        assert snd_room["longitude"] == test_another_room_payload["longitude"]
+        assert snd_room["owner_uuid"] == test_another_room_payload["owner_uuid"]
+        assert snd_room["price_per_day"] == test_another_room_payload["price_per_day"]
 
-    # get all ratings
-    response = test_app.get("/rooms/",
-                            headers=header)
+        # controlas that rating list metadata is correct
+        assert response_json["amount"] == 2
 
-    assert response.status_code == 200
+    def test_delete_existing_room(self, test_app):
+        room_1_id = 1
+        room_2_id = 2
 
-    response_json = response.json()
+        response_1 = test_app.delete("/rooms/" + str(room_1_id), headers=header)
+        response_2 = test_app.delete("/rooms/" + str(room_2_id), headers=header)
 
-    frt_room = response_json["rooms"][0]
-    snd_room = response_json["rooms"][1]
+        assert response_1.status_code == 200
+        assert response_2.status_code == 200
 
-    # control that first rating is correct
-    assert frt_room["id"] == 1
-    assert frt_room["type"] == test_room_payload["type"]
-    assert frt_room["owner"] == test_room_payload["owner"]
-    assert frt_room["latitude"] == test_room_payload["latitude"]
-    assert frt_room["longitude"] == test_room_payload["longitude"]
-    assert frt_room["owner_uuid"] == test_room_payload["owner_uuid"]
-    assert frt_room["price_per_day"] == test_room_payload["price_per_day"]
+        response_json_1 = response_1.json()
+        response_json_2 = response_2.json()
 
-    # control that second rating is correct
-    assert snd_room["id"] == 2
-    assert snd_room["type"] == test_another_room_payload["type"]
-    assert snd_room["owner"] == test_another_room_payload["owner"]
-    assert snd_room["latitude"] == test_another_room_payload["latitude"]
-    assert snd_room["longitude"] == test_another_room_payload["longitude"]
-    assert snd_room["owner_uuid"] == test_another_room_payload["owner_uuid"]
-    assert snd_room["price_per_day"] == test_another_room_payload["price_per_day"]
+        assert response_json_1["id"] == room_1_id
+        assert response_json_1["type"] == test_room_payload["type"]
+        assert response_json_1["owner"] == test_room_payload["owner"]
+        assert response_json_1["latitude"] == test_room_payload["latitude"]
+        assert response_json_1["longitude"] == test_room_payload["longitude"]
+        assert response_json_1["owner_uuid"] == test_room_payload["owner_uuid"]
+        assert response_json_1["price_per_day"] == test_room_payload["price_per_day"]
 
-    # controlas that rating list metadata is correct
-    assert response_json["amount"] == 2
+        assert response_json_2["id"] == room_2_id
+        assert response_json_2["type"] == test_another_room_payload["type"]
+        assert response_json_2["owner"] == test_another_room_payload["owner"]
+        assert response_json_2["latitude"] == test_another_room_payload["latitude"]
+        assert response_json_2["longitude"] == test_another_room_payload["longitude"]
+        assert response_json_2["owner_uuid"] == test_another_room_payload["owner_uuid"]
+        assert response_json_2["price_per_day"] == test_another_room_payload["price_per_day"]
 
+    def test_delete_not_existent_room(self, test_app):
+        non_existent_room_id = 25
 
-def test_delete_existing_room(test_app):
-    room_1_id = 1
-    room_2_id = 2
+        response = test_app.delete("/rooms/" + str(non_existent_room_id),
+                                   headers=header)
 
-    response_1 = test_app.delete("/rooms/" + str(room_1_id), headers=header)
-    response_2 = test_app.delete("/rooms/" + str(room_2_id), headers=header)
+        assert response.status_code == 404
 
-    assert response_1.status_code == 200
-    assert response_2.status_code == 200
+        response_json = response.json()
 
-    response_json_1 = response_1.json()
-    response_json_2 = response_2.json()
-
-    assert response_json_1["id"] == room_1_id
-    assert response_json_1["type"] == test_room_payload["type"]
-    assert response_json_1["owner"] == test_room_payload["owner"]
-    assert response_json_1["latitude"] == test_room_payload["latitude"]
-    assert response_json_1["longitude"] == test_room_payload["longitude"]
-    assert response_json_1["owner_uuid"] == test_room_payload["owner_uuid"]
-    assert response_json_1["price_per_day"] == test_room_payload["price_per_day"]
-
-    assert response_json_2["id"] == room_2_id
-    assert response_json_2["type"] == test_another_room_payload["type"]
-    assert response_json_2["owner"] == test_another_room_payload["owner"]
-    assert response_json_2["latitude"] == test_another_room_payload["latitude"]
-    assert response_json_2["longitude"] == test_another_room_payload["longitude"]
-    assert response_json_2["owner_uuid"] == test_another_room_payload["owner_uuid"]
-    assert response_json_2["price_per_day"] == test_another_room_payload["price_per_day"]
-
-
-def test_delete_not_existent_room(test_app):
-    non_existent_room_id = 25
-
-    response = test_app.delete("/rooms/" + str(non_existent_room_id),
-                               headers=header)
-
-    assert response.status_code == 404
-
-    response_json = response.json()
-
-    assert response_json["error"] == "room not found"
+        assert response_json["error"] == "room not found"
