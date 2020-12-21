@@ -1,6 +1,9 @@
 from app.model.room import Room
 from app.errors.http_error import NotFoundError
+from sqlalchemy import func
+from geoalchemy2.elements import WKTElement
 
+RADIUS = 10
 
 class RoomDAO:
     @classmethod
@@ -68,8 +71,27 @@ class RoomDAO:
         return room.serialize()
 
     @classmethod
-    def get_all_rooms(cls, db):
-        rooms_list = db.query(Room).all()
+    def get_all_rooms(cls, db, longitude, latitude):
+
+        partial_query = db.query(Room)
+        # if fecha_inicio and fecha_fin != none and fecha_inicio <= fecha_fin and fecha_inicio and fecha_fin == YYYY-MM-DD:
+            # add filter fechas
+
+        # if longitude and latitude != none and are numbers between -180 and 180:
+            # add filter radius:
+
+        if ((longitude is not None) and
+            (latitude is not None) and
+            (-180 < longitude < 180) and
+            (-90 < latitude < 90)
+        ):
+            point = WKTElement(f'POINT({longitude} {latitude})', srid=4326)
+            partial_query = partial_query.filter(func.ST_DWithin(Room.location, point, RADIUS))
+
+        # if people != none and is number >= 0:
+            # add filter capacity >= people
+
+        rooms_list = partial_query.all()
 
         serialized_list = []
         for room in rooms_list:
