@@ -13,10 +13,10 @@ from app.main import app
 def test_app():
     client = TestClient(app)
 
-    _, db_fname = tempfile.mkstemp()
-    TESTING_DB_URL = "sqlite:///" + db_fname
+    # TODO: Only for testing purpose, then use env variable
+    TESTING_DB_URL = "postgresql://user:password@bookbnb-postserver_db:5432/appserver_db_dev"
 
-    engine = create_engine(TESTING_DB_URL, connect_args={"check_same_thread": False})
+    engine = create_engine(TESTING_DB_URL)
     TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
     Base.metadata.create_all(bind=engine)

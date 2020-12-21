@@ -22,22 +22,18 @@ Base = None
 if ENVIRONMENT == "production":
     # use postgresql
     engine = create_engine(DATABASE_URL)
-    Base = declarative_base()
-    Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-    session = Session()
+
 
 if ENVIRONMENT == "development":
     # use sqlite
-    engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False}, echo=True)
-    listen(engine, 'connect', load_spatialite)
-    metadata = MetaData(engine)
-    # Create a Base class for models
-    Base = declarative_base(metadata=metadata)
-    Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-    session = Session()
-    session.execute('SELECT InitSpatialMetaData(1)')
-    remove(engine, 'connect', load_spatialite)
+    engine = create_engine(DATABASE_URL, echo=True)
 
+
+Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+session = Session()
+
+# Create a Base class for models
+Base = declarative_base()
 
 def get_db():
     db = Session()

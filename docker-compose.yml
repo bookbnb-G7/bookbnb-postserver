@@ -22,13 +22,15 @@ services:
 
     environment:
       - ENVIRONMENT=development
-      - DATABASE_URL=sqlite:///./app.db
+      - DATABASE_URL=postgresql://user:password@bookbnb-postserver_db:5432/appserver_db_dev
 
   db:
     container_name: bookbnb-postserver_db
 
-    image: postgres:12.1-alpine
+    image: postgis/postgis
 
+    ports:
+      - 5432:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data/
 

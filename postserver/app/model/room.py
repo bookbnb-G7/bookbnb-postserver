@@ -24,7 +24,7 @@ class Room(Base):
     owner = Column(String(255), nullable=False)
     owner_id = Column(Integer, nullable=False)
     price_per_day = Column(Float, nullable=False)
-    location = Column(Geometry(geometry_type='POINT', srid=4326, management=True))
+    location = Column(Geometry(geometry_type='POINT', srid=4326))
 
     created_at = Column(DateTime, nullable=False)
     updated_at = Column(DateTime, nullable=False)
@@ -46,8 +46,8 @@ class Room(Base):
             "owner": self.owner,
             "owner_id": self.owner_id,
             "price_per_day": self.price_per_day,
-            "lng": float(coords.lng),
-            "lat": float(coords.lat),
+            "lng": float(coords['lng']),
+            "lat": float(coords['lat']),
             "location": self.location,
             "created_at": self.created_at,
             "updated_at": self.updated_at,
