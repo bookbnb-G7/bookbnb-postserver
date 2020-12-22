@@ -1,21 +1,18 @@
+import os
 import pytest
-import tempfile
 from app.main import app
-from app.db import Base, get_db
-from sqlalchemy import create_engine
+from app.db import Base, get_db, engine
 from sqlalchemy.orm import sessionmaker
 from fastapi.testclient import TestClient
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="class", autouse=False)
 def test_app():
     client = TestClient(app)
 
-    _, db_fname = tempfile.mkstemp()
-    TESTING_DB_URL = "sqlite:///" + db_fname
-
-    engine = create_engine(TESTING_DB_URL, connect_args={"check_same_thread": False})
-    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    TestingSessionLocal = sessionmaker(autocommit=False,
+                                       autoflush=False,
+                                       bind=engine)
 
     Base.metadata.create_all(bind=engine)
 
@@ -28,4 +25,9 @@ def test_app():
 
     app.dependency_overrides[get_db] = get_testing_db
 
+    Base.metadata.drop_all(engine)
+    Base.metadata.create_all(engine)
+
     yield client  # testing happens here
+
+

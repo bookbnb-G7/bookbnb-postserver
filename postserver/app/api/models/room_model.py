@@ -7,7 +7,10 @@ class RoomSchema(BaseModel):
     type: str
     owner: str
     owner_uuid: int
+    latitude: float
+    longitude: float
     price_per_day: float
+    capacity: int
 
 
 class RoomDB(RoomSchema):
@@ -23,4 +26,7 @@ class RoomList(BaseModel):
 
 class RoomPatch(BaseModel):
     type: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
     price_per_day: Optional[float] = None
+    capacity: Optional[int] = None
