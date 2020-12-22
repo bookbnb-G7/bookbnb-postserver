@@ -92,8 +92,10 @@ class RoomDAO:
             (date_ends is not None) and
             (validate_date_format(date_begins)) and
             (validate_date_format(date_ends)) and
-            (date_begins <= date_ends)
+            (datetime.datetime.strptime(date_begins, '%Y-%m-%d') <= datetime.datetime.strptime(date_ends, '%Y-%m-%d'))
         ):
+            date_begins = datetime.datetime.strptime(date_begins, '%Y-%m-%d')
+            date_ends = datetime.datetime.strptime(date_ends, '%Y-%m-%d')
             # Get the list of room ids that are booked between the dates received
             book_list = book_list = db.query(RoomBooking) \
                 .filter(((RoomBooking.date_begins <= date_ends) & 
