@@ -5,7 +5,9 @@ from geoalchemy2.elements import WKTElement
 from app.model.room_booking import RoomBooking
 import datetime
 
-RADIUS = 10
+# Radius of 1 is aprox 111km, so we take search for rooms that are
+# within an 11km distance by using a radius of 0.1
+RADIUS = 0.1
 
 
 def validate_date_format(date_text):
@@ -27,6 +29,7 @@ class RoomDAO:
             longitude=room_args.longitude,
             owner_uuid=room_args.owner_uuid,
             price_per_day=room_args.price_per_day,
+            capacity=room_args.capacity,
         )
 
         db.add(new_room)
@@ -72,18 +75,22 @@ class RoomDAO:
         if update_args.price_per_day is not None:
             room.price_per_day = update_args.price_per_day
 
-        if update_args.latitude is not None:
-            room.latitude = update_args.latitude
+        if ((update_args.longitude is not None) and
+            (update_args.latitude is not None) and
+            (-180 < update_args.longitude < 180) and
+            (-90 < update_args.latitude < 90)
+        ):
+            room.location = WKTElement(f'POINT({update_args.longitude} {update_args.latitude})', srid=4326)
 
-        if update_args.longitude is not None:
-            room.longitude = update_args.longitude
+        if update_args.capacity is not None:
+            room.capacity = update_args.capacity
 
         db.commit()
 
         return room.serialize()
 
     @classmethod
-    def get_all_rooms(cls, db, date_begins, date_ends, longitude, latitude):
+    def get_all_rooms(cls, db, date_begins, date_ends, longitude, latitude, people):
 
         partial_query = db.query(Room)
 
@@ -118,8 +125,11 @@ class RoomDAO:
             point = WKTElement(f'POINT({longitude} {latitude})', srid=4326)
             partial_query = partial_query.filter(func.ST_DWithin(Room.location, point, RADIUS))
 
-        # TODO: if people != none and is number >= 0:
-            # add filter capacity >= people
+        # People capacity query
+        if ((people is not None) and
+            (people >= 0)
+        ):
+            partial_query = partial_query.filter(Room.capacity >= people)
 
         rooms_list = partial_query.all()
 

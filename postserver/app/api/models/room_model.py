@@ -10,6 +10,7 @@ class RoomSchema(BaseModel):
     latitude: float
     longitude: float
     price_per_day: float
+    capacity: int
 
 
 class RoomDB(RoomSchema):
@@ -28,3 +29,4 @@ class RoomPatch(BaseModel):
     latitude: Optional[float] = None
     longitude: Optional[float] = None
     price_per_day: Optional[float] = None
+    capacity: Optional[int] = None

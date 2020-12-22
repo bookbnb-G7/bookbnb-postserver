@@ -10,6 +10,7 @@ test_room_payload = {
     "latitude": 1.0,
     "longitude": 2.0,
     "price_per_day": 1000.0,
+    "capacity": 7,
 }
 
 
