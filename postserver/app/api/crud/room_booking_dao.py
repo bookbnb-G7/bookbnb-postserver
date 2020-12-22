@@ -17,13 +17,7 @@ class RoomBookingDAO:
         booking_ends = room_booking_args.date_ends
         booking_begins = room_booking_args.date_begins
 
-        bookings_on_same_date = db.query(RoomBooking) \
-            .filter(RoomBooking.room_id == room_id) \
-            .filter(RoomBooking.date_begins <= booking_begins,
-                    RoomBooking.date_ends >= booking_begins,
-                    RoomBooking.date_begins <= booking_ends,
-                    RoomBooking.date_ends >= booking_ends) \
-            .count()
+        bookings_on_same_date = cls.bookings_on_same_date(db, room_id, booking_begins, booking_ends)
 
         if bookings_on_same_date > 0:
             raise RoomAlreadyBookedError()
@@ -35,7 +29,7 @@ class RoomBookingDAO:
             room_id=room_id,
             date_ends=booking_ends,
             date_begins=booking_begins,
-            total_price = total_price,
+            total_price=total_price,
             user_id=room_booking_args.user_id,
             amount_of_people=room_booking_args.amount_of_people
         )
@@ -93,3 +87,25 @@ class RoomBookingDAO:
         db.commit()
 
         return room_booking.serialize()
+
+    @classmethod
+    def bookings_on_same_date(cls, db, room_id, date_begins, date_ends):
+        bookings_on_same_date = db.query(RoomBooking) \
+            .filter(RoomBooking.room_id == room_id) \
+            .filter(RoomBooking.date_begins <= date_begins,
+                    RoomBooking.date_ends >= date_begins,
+                    RoomBooking.date_begins <= date_ends,
+                    RoomBooking.date_ends >= date_ends) \
+            .count()
+        return bookings_on_same_date
+
+    @classmethod
+    def get_room_ids_booked_on_date(cls, db, date_begins, date_ends):
+        book_list = db.query(RoomBooking) \
+            .filter(RoomBooking.date_begins <= date_begins,
+                    RoomBooking.date_ends >= date_begins,
+                    RoomBooking.date_begins <= date_ends,
+                    RoomBooking.date_ends >= date_ends) \
+            .select(RoomBooking.room_id) \
+            .distinct()
+        return book_list

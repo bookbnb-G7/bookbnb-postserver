@@ -2,8 +2,20 @@ from app.model.room import Room
 from app.errors.http_error import NotFoundError
 from sqlalchemy import func
 from geoalchemy2.elements import WKTElement
+from app.model.room_booking import RoomBooking
+import datetime
 
 RADIUS = 10
+
+
+def validate_date_format(date_text):
+    try:
+        datetime.datetime.strptime(date_text, '%Y-%m-%d')
+        return True
+    except ValueError:
+        # Incorrect data format, should be YYYY-MM-DD
+        return False
+
 
 class RoomDAO:
     @classmethod
@@ -71,15 +83,31 @@ class RoomDAO:
         return room.serialize()
 
     @classmethod
-    def get_all_rooms(cls, db, longitude, latitude):
+    def get_all_rooms(cls, db, date_begins, date_ends, longitude, latitude):
 
         partial_query = db.query(Room)
-        # if fecha_inicio and fecha_fin != none and fecha_inicio <= fecha_fin and fecha_inicio and fecha_fin == YYYY-MM-DD:
-            # add filter fechas
 
-        # if longitude and latitude != none and are numbers between -180 and 180:
-            # add filter radius:
+        # Date query
+        if ((date_begins is not None) and
+            (date_ends is not None) and
+            (validate_date_format(date_begins)) and
+            (validate_date_format(date_ends)) and
+            (date_begins <= date_ends)
+        ):
+            # Get the list of room ids that are booked between the dates received
+            book_list = book_list = db.query(RoomBooking) \
+                .filter(((RoomBooking.date_begins <= date_ends) & 
+                        (RoomBooking.date_ends >= date_begins))) \
+                .distinct(RoomBooking.room_id) \
+                .with_entities(RoomBooking.room_id) \
+                .all()
+            # Turn the list of tuples into a list
+            for i in range(len(book_list)):
+                book_list[i] = book_list[i][0]
+            # Filter the rooms that are not booked in the range
+            partial_query = partial_query.filter(~ Room.id.in_(book_list))
 
+        # Location query
         if ((longitude is not None) and
             (latitude is not None) and
             (-180 < longitude < 180) and
@@ -88,7 +116,7 @@ class RoomDAO:
             point = WKTElement(f'POINT({longitude} {latitude})', srid=4326)
             partial_query = partial_query.filter(func.ST_DWithin(Room.location, point, RADIUS))
 
-        # if people != none and is number >= 0:
+        # TODO: if people != none and is number >= 0:
             # add filter capacity >= people
 
         rooms_list = partial_query.all()
