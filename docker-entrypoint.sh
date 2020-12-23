@@ -1,3 +1,3 @@
 #!/bin/sh
 cd postserver/
-uvicorn app.main:app --host=0.0.0.0 --port=${PORT:-5000}
+uvicorn app.main:app --reload --host=0.0.0.0 --port=${PORT:-5000}
