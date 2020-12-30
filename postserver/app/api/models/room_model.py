@@ -4,6 +4,7 @@ from typing import List, Optional
 
 
 class RoomSchema(BaseModel):
+    id: int
     type: str
     owner: str
     owner_uuid: int
@@ -14,7 +15,6 @@ class RoomSchema(BaseModel):
 
 
 class RoomDB(RoomSchema):
-    id: int
     created_at: datetime
     updated_at: datetime
 

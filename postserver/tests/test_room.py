@@ -2,6 +2,7 @@ import json
 import pytest
 
 test_room_payload = {
+    "id": 1,
     "type": "traphouse",
     "owner": "facu, el crack",
     "owner_uuid": 1,
@@ -12,6 +13,7 @@ test_room_payload = {
 }
 
 test_another_room_payload = {
+    "id": 2,
     "type": "rancho",
     "owner": "pejelagarto",
     "owner_uuid": 2,

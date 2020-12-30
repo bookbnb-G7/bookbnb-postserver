@@ -4,6 +4,7 @@ import pytest
 room_id = 1
 
 test_room_payload = {
+    "id": 1,
     "type": "traphouse",
     "owner": "facu, el crack",
     "owner_uuid": 1,

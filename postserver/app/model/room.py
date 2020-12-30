@@ -21,7 +21,7 @@ class Room(Base):
 
     __tablename__ = "rooms"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=False)
     type = Column(String(60), nullable=False)
     owner = Column(String(255), nullable=False)
     price_per_day = Column(Float, nullable=False)
@@ -32,7 +32,8 @@ class Room(Base):
     created_at = Column(DateTime, nullable=False)
     updated_at = Column(DateTime, nullable=False)
 
-    def __init__(self, type, owner, owner_uuid, price_per_day, latitude, longitude, capacity):
+    def __init__(self, id, type, owner, owner_uuid, price_per_day, latitude, longitude, capacity):
+        self.id = id
         self.type = type
         self.owner = owner
         self.owner_uuid = owner_uuid

@@ -23,6 +23,7 @@ class RoomDAO:
     @classmethod
     def add_new_room(cls, db, room_args):
         new_room = Room(
+            id=room_args.id,
             type=room_args.type,
             owner=room_args.owner,
             latitude=room_args.latitude,
