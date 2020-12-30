@@ -26,6 +26,7 @@ class RoomBookingDAO:
         total_price = booking_days * room['price_per_day']
 
         new_room_booking = RoomBooking(
+            id=room_booking_args.id,
             room_id=room_id,
             date_ends=booking_ends,
             date_begins=booking_begins,

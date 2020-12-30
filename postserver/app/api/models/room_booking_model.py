@@ -4,6 +4,7 @@ from datetime import date, datetime
 
 
 class RoomBookingSchema(BaseModel):
+    id: int
     user_id: int
     date_ends: date
     date_begins: date
@@ -11,7 +12,6 @@ class RoomBookingSchema(BaseModel):
 
 
 class RoomBookingDB(RoomBookingSchema):
-    id: int
     room_id: int
     total_price: float
     created_at: datetime

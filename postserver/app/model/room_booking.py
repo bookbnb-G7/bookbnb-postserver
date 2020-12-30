@@ -7,7 +7,7 @@ class RoomBooking(Base):
 
     __tablename__ = "room_bookings"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=False)
     room_id = Column(Integer, nullable=False)
     user_id = Column(Integer, nullable=False)
     total_price = Column(Float, nullable=False)
@@ -18,7 +18,8 @@ class RoomBooking(Base):
     created_at = Column(DateTime, nullable=False)
     updated_at = Column(DateTime, nullable=False)
 
-    def __init__(self, room_id, user_id, date_begins, date_ends, total_price, amount_of_people):
+    def __init__(self, id, room_id, user_id, date_begins, date_ends, total_price, amount_of_people):
+        self.id = id
         self.room_id = room_id
         self.user_id = user_id
         self.date_ends = date_ends

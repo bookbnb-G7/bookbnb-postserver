@@ -24,6 +24,7 @@ test_another_room_payload = {
 }
 
 test_room_booking_payload = {
+    "id": 1,
     "user_id": 1,
     "date_ends": "2020-12-24",
     "date_begins": "2020-12-22",
@@ -31,6 +32,7 @@ test_room_booking_payload = {
 }
 
 test_another_room_booking_payload = {
+    "id": 2,
     "user_id": 1,
     "date_ends": "2020-11-14",
     "date_begins": "2020-11-10",
