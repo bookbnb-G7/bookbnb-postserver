@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel
 from datetime import date, datetime
 
@@ -9,6 +9,7 @@ class RoomBookingSchema(BaseModel):
     date_ends: date
     date_begins: date
     amount_of_people: int
+    status: int
 
 
 class RoomBookingDB(RoomBookingSchema):
@@ -22,3 +23,7 @@ class RoomBookingList(BaseModel):
     amount: int
     room_id: int
     bookings: List[RoomBookingDB]
+
+
+class RoomBookingPatch(BaseModel):
+    status: Optional[int] = None

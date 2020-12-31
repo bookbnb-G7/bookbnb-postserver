@@ -19,7 +19,8 @@ test_room_booking_payload = {
     "user_id": 1,
     "date_ends": "2020-12-30",
     "date_begins": "2020-12-15",
-    "amount_of_people": 3
+    "amount_of_people": 3,
+    "status": 1,
 }
 
 test_another_room_booking_payload = {
@@ -27,7 +28,8 @@ test_another_room_booking_payload = {
     "user_id": 1,
     "date_ends": "2020-12-14",
     "date_begins": "2020-12-10",
-    "amount_of_people": 3
+    "amount_of_people": 3,
+    "status": 1,
 }
 
 header = {"api-key": "ULTRAMEGAFAKEAPIKEY"}
@@ -65,6 +67,7 @@ class TestRoomBooking:
         assert response_json["date_ends"] == test_room_booking_payload["date_ends"]
         assert response_json["total_price"] == 15 * test_room_payload["price_per_day"]
         assert response_json["date_begins"] == test_room_booking_payload["date_begins"]
+        assert response_json["status"] == test_room_booking_payload["status"]
 
     def test_book_a_room_without_api_key(self, test_app):
         response = test_app.post(
@@ -111,6 +114,7 @@ class TestRoomBooking:
         assert response_json["date_ends"] == test_room_booking_payload["date_ends"]
         assert response_json["total_price"] == 15 * test_room_payload["price_per_day"]
         assert response_json["date_begins"] == test_room_booking_payload["date_begins"]
+        assert response_json["status"] == test_room_booking_payload["status"]
 
     def test_get_an_non_existent_room_rating(self, test_app):
         not_existent_room_booking_id = 25
@@ -168,6 +172,7 @@ class TestRoomBooking:
         assert frt_rating["date_ends"] == test_room_booking_payload["date_ends"]
         assert frt_rating["total_price"] == 15 * test_room_payload["price_per_day"]
         assert frt_rating["date_begins"] == test_room_booking_payload["date_begins"]
+        assert frt_rating["status"] == test_room_booking_payload["status"]
 
         # control that second rating is correct
         assert snd_rating["id"] == 2
@@ -176,10 +181,58 @@ class TestRoomBooking:
         assert snd_rating["user_id"] == test_another_room_booking_payload["user_id"]
         assert snd_rating["date_ends"] == test_another_room_booking_payload["date_ends"]
         assert snd_rating["date_begins"] == test_another_room_booking_payload["date_begins"]
+        assert snd_rating["status"] == test_another_room_booking_payload["status"]
 
         # controlas that rating list metadata is correct
         assert response_json["amount"] == 2
         assert response_json["room_id"] == room_id
+
+    def test_update_an_existing_room_status(self, test_app):
+        booking_id = 1
+        updated_status = {"status": 2}
+        response = test_app.patch(
+            url="/rooms/" + str(room_id) + "/bookings/" + str(booking_id),
+            headers=header,
+            data=json.dumps(updated_status)
+        )
+
+        assert response.status_code == 200
+
+        response_json = response.json()
+
+        assert response_json["id"] == 1
+        assert response_json["room_id"] == room_id
+        assert response_json["user_id"] == test_room_booking_payload["user_id"]
+        assert response_json["date_ends"] == test_room_booking_payload["date_ends"]
+        assert response_json["total_price"] == 15 * test_room_payload["price_per_day"]
+        assert response_json["date_begins"] == test_room_booking_payload["date_begins"]
+        assert response_json["status"] == updated_status["status"]
+
+
+        # after that we reset the changes
+
+        room_booking_reset_patch = {"status": 1}
+
+        response = test_app.patch(
+            url="/rooms/" + str(room_id) + "/bookings/" + str(booking_id),
+            headers=header,
+            data=json.dumps(room_booking_reset_patch)
+        )
+
+        assert response.status_code == 200
+
+        response_json = response.json()
+
+        assert response_json["id"] == 1
+        assert response_json["room_id"] == room_id
+        assert response_json["user_id"] == test_room_booking_payload["user_id"]
+        assert response_json["date_ends"] == test_room_booking_payload["date_ends"]
+        assert response_json["total_price"] == 15 * test_room_payload["price_per_day"]
+        assert response_json["date_begins"] == test_room_booking_payload["date_begins"]
+        assert response_json["status"] == test_room_booking_payload["status"]
+
+
+
 
     def test_delete_a_non_existent_room_booking(self, test_app):
         non_existent_room_rating_id = 25
@@ -237,6 +290,7 @@ class TestRoomBooking:
         assert response_json_1["date_ends"] == test_room_booking_payload["date_ends"]
         assert response_json_1["total_price"] == 15 * test_room_payload["price_per_day"]
         assert response_json_1["date_begins"] == test_room_booking_payload["date_begins"]
+        assert response_json_1["status"] == test_room_booking_payload["status"]
 
         # control that second rating is correct
         assert response_json_2["id"] == 2
@@ -245,5 +299,6 @@ class TestRoomBooking:
         assert response_json_2["user_id"] == test_another_room_booking_payload["user_id"]
         assert response_json_2["date_ends"] == test_another_room_booking_payload["date_ends"]
         assert response_json_2["date_begins"] == test_another_room_booking_payload["date_begins"]
+        assert response_json_2["status"] == test_another_room_booking_payload["status"]
 
         _delete_room(test_app)

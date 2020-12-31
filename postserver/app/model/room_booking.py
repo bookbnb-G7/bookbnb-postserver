@@ -14,11 +14,12 @@ class RoomBooking(Base):
     date_ends = Column(Date, nullable=False)
     date_begins = Column(Date, nullable=False)
     amount_of_people = Column(Integer, nullable=False)
+    status = Column(Integer, nullable=False)
 
     created_at = Column(DateTime, nullable=False)
     updated_at = Column(DateTime, nullable=False)
 
-    def __init__(self, id, room_id, user_id, date_begins, date_ends, total_price, amount_of_people):
+    def __init__(self, id, room_id, user_id, date_begins, date_ends, total_price, amount_of_people, status):
         self.id = id
         self.room_id = room_id
         self.user_id = user_id
@@ -26,6 +27,7 @@ class RoomBooking(Base):
         self.date_begins = date_begins
         self.total_price = total_price
         self.amount_of_people = amount_of_people
+        self.status = status
 
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
@@ -39,6 +41,7 @@ class RoomBooking(Base):
             "date_begins": self.date_begins,
             "total_price": self.total_price,
             "amount_of_people": self.amount_of_people,
+            "status": self.status,
 
             "created_at": self.created_at,
             "updated_at": self.updated_at,
