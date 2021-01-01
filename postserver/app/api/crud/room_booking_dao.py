@@ -26,12 +26,14 @@ class RoomBookingDAO:
         total_price = booking_days * room['price_per_day']
 
         new_room_booking = RoomBooking(
+            id=room_booking_args.id,
             room_id=room_id,
             date_ends=booking_ends,
             date_begins=booking_begins,
             total_price=total_price,
             user_id=room_booking_args.user_id,
-            amount_of_people=room_booking_args.amount_of_people
+            amount_of_people=room_booking_args.amount_of_people,
+            status=room_booking_args.status
         )
 
         db.add(new_room_booking)
@@ -68,6 +70,27 @@ class RoomBookingDAO:
             serialized_list.append(booking.serialize())
 
         return serialized_list
+
+    @classmethod
+    def update_room_booking(cls, db, room_id, booking_id, update_args):
+        if not RoomDAO.room_is_present(db, room_id):
+            raise NotFoundError("room")
+
+        room_booking = db.query(RoomBooking)\
+                         .get(booking_id)
+
+        if room_booking is None:
+            raise NotFoundError("room booking")
+
+        if not room_booking.is_from(room_id):
+            raise NoRelationError("room", "room booking")
+
+        if update_args.status is not None:
+            room_booking.status = update_args.status
+
+        db.commit()
+
+        return room_booking.serialize()
 
     @classmethod
     def delete_room_booking(cls, db, room_id, booking_id):
