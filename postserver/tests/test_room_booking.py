@@ -16,14 +16,14 @@ test_room_payload = {
 
 test_room_booking_payload = {
     "id": 1,
-    "date_ends": "2020-12-30",
-    "date_begins": "2020-12-15",
+    "date_to": "2020-12-30",
+    "date_from": "2020-12-15",
 }
 
 test_another_room_booking_payload = {
     "id": 2,
-    "date_ends": "2020-12-14",
-    "date_begins": "2020-12-10",
+    "date_to": "2020-12-14",
+    "date_from": "2020-12-10",
 }
 
 header = {"api-key": "ULTRAMEGAFAKEAPIKEY"}
@@ -57,8 +57,8 @@ class TestRoomBooking:
 
         assert response_json["id"] == 1
         assert response_json["room_id"] == room_id
-        assert response_json["date_ends"] == test_room_booking_payload["date_ends"]
-        assert response_json["date_begins"] == test_room_booking_payload["date_begins"]
+        assert response_json["date_to"] == test_room_booking_payload["date_to"]
+        assert response_json["date_from"] == test_room_booking_payload["date_from"]
 
     def test_book_a_room_without_api_key(self, test_app):
         response = test_app.post(
@@ -131,7 +131,7 @@ class TestRoomBooking:
         # control that first rating is correct
         assert response_json_1["id"] == 1
         assert response_json_1["room_id"] == room_id
-        assert response_json_1["date_ends"] == test_room_booking_payload["date_ends"]
-        assert response_json_1["date_begins"] == test_room_booking_payload["date_begins"]
+        assert response_json_1["date_to"] == test_room_booking_payload["date_to"]
+        assert response_json_1["date_from"] == test_room_booking_payload["date_from"]
 
         _delete_room(test_app)

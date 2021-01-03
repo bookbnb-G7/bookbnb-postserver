@@ -55,14 +55,14 @@ async def update_room(
 async def get_all_rooms(
         db: Session = Depends(get_db),
         api_key: Optional[str] = Header(None),
-        date_begins: Optional[str] = None,
-        date_ends: Optional[str] = None,
+        date_from: Optional[str] = None,
+        date_to: Optional[str] = None,
         longitude: Optional[float] = None,
         latitude: Optional[float] = None,
         people: Optional[int] = None
 ):
     auth_service.verify_apy_key(api_key)
-    rooms_list = RoomDAO.get_all_rooms(db, date_begins, date_ends, longitude, latitude, people)
+    rooms_list = RoomDAO.get_all_rooms(db, date_from, date_to, longitude, latitude, people)
     amount_rooms = len(rooms_list)
     return {"amount": amount_rooms, "rooms": rooms_list}
 

@@ -5,8 +5,8 @@ from datetime import date, datetime
 
 class RoomBookingSchema(BaseModel):
     id: int
-    date_ends: date
-    date_begins: date
+    date_to: date
+    date_from: date
 
 
 class RoomBookingDB(RoomBookingSchema):

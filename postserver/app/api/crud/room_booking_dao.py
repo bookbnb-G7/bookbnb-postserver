@@ -10,10 +10,10 @@ class RoomBookingDAO:
         if not RoomDAO.room_is_present(db, room_id):
             raise NotFoundError("room")
 
-        booking_ends = room_booking_args.date_ends
-        booking_begins = room_booking_args.date_begins
+        booking_to = room_booking_args.date_to
+        booking_from = room_booking_args.date_from
 
-        bookings_on_same_date = cls.bookings_on_same_date(db, room_id, booking_begins, booking_ends)
+        bookings_on_same_date = cls.bookings_on_same_date(db, room_id, booking_from, booking_to)
 
         if bookings_on_same_date > 0:
             raise RoomAlreadyBookedError()
@@ -21,8 +21,8 @@ class RoomBookingDAO:
         new_room_booking = RoomBooking(
             id=room_booking_args.id,
             room_id=room_id,
-            date_ends=booking_ends,
-            date_begins=booking_begins,
+            date_to=booking_to,
+            date_from=booking_from,
         )
 
         db.add(new_room_booking)
@@ -50,12 +50,12 @@ class RoomBookingDAO:
         return room_booking.serialize()
 
     @classmethod
-    def bookings_on_same_date(cls, db, room_id, date_begins, date_ends):
+    def bookings_on_same_date(cls, db, room_id, date_from, date_to):
         bookings_on_same_date = db.query(RoomBooking) \
             .filter(RoomBooking.room_id == room_id) \
-            .filter(RoomBooking.date_begins <= date_begins,
-                    RoomBooking.date_ends >= date_begins,
-                    RoomBooking.date_begins <= date_ends,
-                    RoomBooking.date_ends >= date_ends) \
+            .filter(RoomBooking.date_from <= date_from,
+                    RoomBooking.date_to >= date_from,
+                    RoomBooking.date_from <= date_to,
+                    RoomBooking.date_to >= date_to) \
             .count()
         return bookings_on_same_date
