@@ -25,7 +25,7 @@ class Room(Base):
     type = Column(String(60), nullable=False)
     owner = Column(String(255), nullable=False)
     price_per_day = Column(Float, nullable=False)
-    owner_uuid = Column(String(255), nullable=False)
+    owner_uuid = Column(Integer, nullable=False)
     location = Column(Geometry(geometry_type='POINT', srid=4326))
     capacity = Column(Integer, nullable=False)
 
