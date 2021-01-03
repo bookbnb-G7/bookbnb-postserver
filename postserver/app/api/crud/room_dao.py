@@ -81,7 +81,10 @@ class RoomDAO:
             (-180 < update_args.longitude < 180) and
             (-90 < update_args.latitude < 90)
         ):
-            room.location = WKTElement(f'POINT({update_args.longitude} {update_args.latitude})', srid=4326)
+            room.location = WKTElement(
+                f'POINT({update_args.longitude} {update_args.latitude})',
+                srid=4326
+            )
 
         if update_args.capacity is not None:
             room.capacity = update_args.capacity
@@ -91,23 +94,23 @@ class RoomDAO:
         return room.serialize()
 
     @classmethod
-    def get_all_rooms(cls, db, date_begins, date_ends, longitude, latitude, people):
+    def get_all_rooms(cls, db, date_from, date_to, longitude, latitude, people, owner_uuid):
 
         partial_query = db.query(Room)
 
         # Date query
-        if ((date_begins is not None) and
-            (date_ends is not None) and
-            (validate_date_format(date_begins)) and
-            (validate_date_format(date_ends)) and
-            (datetime.datetime.strptime(date_begins, '%Y-%m-%d') <= datetime.datetime.strptime(date_ends, '%Y-%m-%d'))
+        if ((date_from is not None) and
+            (date_to is not None) and
+            (validate_date_format(date_from)) and
+            (validate_date_format(date_to)) and
+            (datetime.datetime.strptime(date_from, '%Y-%m-%d') <= datetime.datetime.strptime(date_to, '%Y-%m-%d'))
         ):
-            date_begins = datetime.datetime.strptime(date_begins, '%Y-%m-%d')
-            date_ends = datetime.datetime.strptime(date_ends, '%Y-%m-%d')
+            date_from = datetime.datetime.strptime(date_from, '%Y-%m-%d')
+            date_to = datetime.datetime.strptime(date_to, '%Y-%m-%d')
             # Get the list of room ids that are booked between the dates received
-            book_list = book_list = db.query(RoomBooking) \
-                .filter(((RoomBooking.date_begins <= date_ends) & 
-                        (RoomBooking.date_ends >= date_begins))) \
+            book_list = db.query(RoomBooking) \
+                .filter(((RoomBooking.date_from <= date_to) &
+                         (RoomBooking.date_to >= date_from))) \
                 .distinct(RoomBooking.room_id) \
                 .with_entities(RoomBooking.room_id) \
                 .all()
@@ -131,6 +134,10 @@ class RoomDAO:
             (people >= 0)
         ):
             partial_query = partial_query.filter(Room.capacity >= people)
+
+        # Owner uuid query
+        if owner_uuid is not None:
+            partial_query = partial_query.filter(Room.owner_uuid == owner_uuid)
 
         rooms_list = partial_query.all()
 

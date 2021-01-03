@@ -20,7 +20,3 @@ class RoomReviewList(BaseModel):
     amount: int
     room_id: int
     reviews: List[RoomReviewDB]
-
-
-class RoomReviewPatch(BaseModel):
-    review: Optional[str] = None

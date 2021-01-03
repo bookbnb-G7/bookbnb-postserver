@@ -26,8 +26,8 @@ test_another_room_payload = {
 test_room_booking_payload = {
     "id": 1,
     "user_id": 1,
-    "date_ends": "2020-12-24",
-    "date_begins": "2020-12-22",
+    "date_to": "2020-12-24",
+    "date_from": "2020-12-22",
     "amount_of_people": 3,
     "status": 1,
 }
@@ -35,8 +35,8 @@ test_room_booking_payload = {
 test_another_room_booking_payload = {
     "id": 2,
     "user_id": 1,
-    "date_ends": "2020-11-14",
-    "date_begins": "2020-11-10",
+    "date_to": "2020-11-14",
+    "date_from": "2020-11-10",
     "amount_of_people": 3,
     "status": 1,
 }
@@ -296,7 +296,7 @@ class TestRoom:
         )
 
         # get all rooms not booked between (date_begins: 2020-11-3 and date_ends:2020-11-25)
-        response = test_app.get("/rooms/?date_begins=2020-11-3&date_ends=2020-11-25",
+        response = test_app.get("/rooms/?date_from=2020-11-3&date_to=2020-11-25",
                                 headers=header)
 
         assert response.status_code == 200
@@ -320,7 +320,7 @@ class TestRoom:
 
 
         # get all rooms not booked between (date_begins: 2020-12-15 and date_ends:2020-12-25)
-        response = test_app.get("/rooms/?date_begins=2020-12-15&date_ends=2020-12-25",
+        response = test_app.get("/rooms/?date_from=2020-12-15&date_to=2020-12-25",
                                 headers=header)
 
         assert response.status_code == 200
@@ -343,7 +343,7 @@ class TestRoom:
         assert response_json["amount"] == 1
 
         # get all rooms not booked between (date_begins=2020-11-3 and date_ends=2020-12-30)
-        response = test_app.get("/rooms/?date_begins=2020-11-3&date_ends=2020-12-30",
+        response = test_app.get("/rooms/?date_from=2020-11-3&date_to=2020-12-30",
                                 headers=header)
 
         assert response.status_code == 200

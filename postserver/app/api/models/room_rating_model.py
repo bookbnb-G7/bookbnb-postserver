@@ -1,6 +1,6 @@
+from typing import List
 from datetime import datetime
 from pydantic import BaseModel
-from typing import List, Optional
 
 
 class RoomRatingSchema(BaseModel):
@@ -20,7 +20,3 @@ class RoomRatingList(BaseModel):
     amount: int
     room_id: int
     ratings: List[RoomRatingDB]
-
-
-class RoomRatingPatch(BaseModel):
-    rating: Optional[int] = None
