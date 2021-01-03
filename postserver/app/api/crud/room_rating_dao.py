@@ -70,22 +70,3 @@ class RoomRatingDAO:
 
         return room_rating.serialize()
 
-    @classmethod
-    def update_room_rating(cls, db, room_id, rating_id, update_args):
-        if not RoomDAO.room_is_present(db, room_id):
-            raise NotFoundError("room")
-
-        room_rating = db.query(RoomRating).get(rating_id)
-
-        if room_rating is None:
-            raise NotFoundError("room rating")
-
-        if not room_rating.is_from(room_id):
-            raise NoRelationError("room", "room rating")
-
-        if update_args.rating is not None:
-            room_rating.rating = update_args.rating
-
-        db.commit()
-
-        return room_rating.serialize()

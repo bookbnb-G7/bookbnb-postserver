@@ -1,3 +1,4 @@
+import logging
 from fastapi import FastAPI
 from app.db import Base, engine
 from fastapi.responses import JSONResponse
@@ -23,18 +24,21 @@ async def pong():
 @app.exception_handler(HTTPException)
 async def http_exception_handler(_request, exc):
     error = {"error": exc.detail}
+    logging.error(f"status code: {exc.status_code} message: {exc.detail}")
     return JSONResponse(status_code=exc.status_code, content=error)
 
 
 @app.exception_handler(BookbnbException)
 async def bookbnb_exception_handler(_request, exc):
     error = {"error": exc.detail}
+    logging.error(f"status code: {exc.status_code} message: {exc.detail}")
     return JSONResponse(status_code=exc.status_code, content=error)
 
 
 @app.exception_handler(AuthException)
 async def auth_exception_handler(_request, exc):
     error = {"error": exc.detail}
+    logging.error(f"status code: {exc.status_code} message: {exc.detail}")
     return JSONResponse(status_code=exc.status_code, content=error)
 
 

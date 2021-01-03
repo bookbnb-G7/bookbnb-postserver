@@ -5,7 +5,6 @@ from fastapi import APIRouter, Depends, Header
 from app.api.crud.room_rating_dao import RoomRatingDAO
 from app.api.models.room_rating_model import (RoomRatingDB, 
                                               RoomRatingList,
-                                              RoomRatingPatch,
                                               RoomRatingSchema)
 
 router = APIRouter()
@@ -48,14 +47,4 @@ async def delete_room_rating(
 ):
     auth_service.verify_apy_key(api_key)
     room_rating_info = RoomRatingDAO.delete_room_rating(db, room_id, rating_id)
-    return room_rating_info
-
-
-@router.patch("/{rating_id}", response_model=RoomRatingDB, status_code=200)
-async def update_room_rating(
-    payload: RoomRatingPatch, room_id: int, rating_id: int, db: Session = Depends(get_db),
-    api_key: Optional[str] = Header(None)
-):
-    auth_service.verify_apy_key(api_key)
-    room_rating_info = RoomRatingDAO.update_room_rating(db, room_id, rating_id, payload)
     return room_rating_info
