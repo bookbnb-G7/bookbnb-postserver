@@ -59,10 +59,13 @@ async def get_all_rooms(
         date_to: Optional[str] = None,
         longitude: Optional[float] = None,
         latitude: Optional[float] = None,
-        people: Optional[int] = None
+        people: Optional[int] = None,
+        owner_uuid: Optional[int] = None
 ):
     auth_service.verify_apy_key(api_key)
-    rooms_list = RoomDAO.get_all_rooms(db, date_from, date_to, longitude, latitude, people)
+    rooms_list = RoomDAO.get_all_rooms(
+        db, date_from, date_to, longitude, latitude, people, owner_uuid
+    )
     amount_rooms = len(rooms_list)
     return {"amount": amount_rooms, "rooms": rooms_list}
 

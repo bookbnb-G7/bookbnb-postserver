@@ -81,7 +81,10 @@ class RoomDAO:
             (-180 < update_args.longitude < 180) and
             (-90 < update_args.latitude < 90)
         ):
-            room.location = WKTElement(f'POINT({update_args.longitude} {update_args.latitude})', srid=4326)
+            room.location = WKTElement(
+                f'POINT({update_args.longitude} {update_args.latitude})',
+                srid=4326
+            )
 
         if update_args.capacity is not None:
             room.capacity = update_args.capacity
@@ -91,7 +94,7 @@ class RoomDAO:
         return room.serialize()
 
     @classmethod
-    def get_all_rooms(cls, db, date_from, date_to, longitude, latitude, people):
+    def get_all_rooms(cls, db, date_from, date_to, longitude, latitude, people, owner_uuid):
 
         partial_query = db.query(Room)
 
@@ -131,6 +134,10 @@ class RoomDAO:
             (people >= 0)
         ):
             partial_query = partial_query.filter(Room.capacity >= people)
+
+        # Owner uuid query
+        if owner_uuid is not None:
+            partial_query = partial_query.filter(Room.owner_uuid == owner_uuid)
 
         rooms_list = partial_query.all()
 
