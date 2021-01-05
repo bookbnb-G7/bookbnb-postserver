@@ -94,7 +94,7 @@ class RoomDAO:
         return room.serialize()
 
     @classmethod
-    def get_all_rooms(cls, db, date_from, date_to, longitude, latitude, people, owner_uuid):
+    def get_all_rooms(cls, db, date_from, date_to, longitude, latitude, people, owner_uuid, min_price, max_price):
 
         partial_query = db.query(Room)
 
@@ -138,6 +138,14 @@ class RoomDAO:
         # Owner uuid query
         if owner_uuid is not None:
             partial_query = partial_query.filter(Room.owner_uuid == owner_uuid)
+
+        # Min price query
+        if min_price is not None:
+            partial_query = partial_query.filter(Room.price_per_day >= min_price)
+
+        # Max price query
+        if max_price is not None:
+            partial_query = partial_query.filter(Room.price_per_day <= max_price)
 
         rooms_list = partial_query.all()
 

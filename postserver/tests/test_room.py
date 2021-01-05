@@ -354,8 +354,6 @@ class TestRoom:
         assert response_json["amount"] == 0
 
     def test_get_all_existing_rooms_that_have_enough_capacity(self, test_app):
-        # To determine if a room is close to a given point, its coordinates must be
-        # within a 0.1 distance from the given point
 
         # get all rooms that have a capacity for 4 persons or more
         response = test_app.get("/rooms/?people=4",
@@ -417,6 +415,66 @@ class TestRoom:
 
         # get all rooms that have a capacity for 11 persons or more
         response = test_app.get("/rooms/?people=11",
+                                headers=header)
+
+        assert response.status_code == 200
+
+        response_json = response.json()
+
+        # control that room list metadata is correct
+        assert response_json["amount"] == 0
+
+    def test_get_all_rooms_min_max_price(self, test_app):
+
+        # get all rooms that have a min price of 150
+        response = test_app.get("/rooms/?min_price=150",
+                                headers=header)
+
+        assert response.status_code == 200
+
+        response_json = response.json()
+
+        # control that room list metadata is correct
+        assert response_json["amount"] == 1
+
+        frt_room = response_json["rooms"][0]
+
+        # control that first room is correct
+        assert frt_room["id"] == 1
+        assert frt_room["type"] == test_room_payload["type"]
+        assert frt_room["owner"] == test_room_payload["owner"]
+        assert frt_room["latitude"] == test_room_payload["latitude"]
+        assert frt_room["longitude"] == test_room_payload["longitude"]
+        assert frt_room["owner_uuid"] == test_room_payload["owner_uuid"]
+        assert frt_room["price_per_day"] == test_room_payload["price_per_day"]
+        assert frt_room["capacity"] == test_room_payload["capacity"]
+
+
+        # get all rooms that have a max price of 150
+        response = test_app.get("/rooms/?max_price=150",
+                                headers=header)
+
+        assert response.status_code == 200
+
+        response_json = response.json()
+
+        # control that room list metadata is correct
+        assert response_json["amount"] == 1
+
+        snd_room = response_json["rooms"][0]
+
+        # control that second room is correct
+        assert snd_room["id"] == 2
+        assert snd_room["type"] == test_another_room_payload["type"]
+        assert snd_room["owner"] == test_another_room_payload["owner"]
+        assert snd_room["latitude"] == test_another_room_payload["latitude"]
+        assert snd_room["longitude"] == test_another_room_payload["longitude"]
+        assert snd_room["owner_uuid"] == test_another_room_payload["owner_uuid"]
+        assert snd_room["price_per_day"] == test_another_room_payload["price_per_day"]
+        assert snd_room["capacity"] == test_another_room_payload["capacity"]
+
+        # get all rooms that have a price between 100 and 200
+        response = test_app.get("/rooms/?min_price=100&max_price=200",
                                 headers=header)
 
         assert response.status_code == 200
