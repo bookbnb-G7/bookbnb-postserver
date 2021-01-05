@@ -9,6 +9,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: build and up
         run: docker-compose up -d --build
+      - name: check database connection
+        run: docker exec bookbnb-postserver_web bash -c 'while !</dev/tcp/db/5432; do sleep 1; done;'
       - name: run pytest
         run: docker exec bookbnb-postserver_web pytest --cov=postserver
       - name: Coveralls
