@@ -13,10 +13,11 @@ jobs:
         run: docker exec bookbnb-postserver_web bash -c 'while !</dev/tcp/db/5432; do sleep 1; done;'
       - name: run pytest
         run: docker exec bookbnb-postserver_web pytest --cov=postserver
-      - name: Coveralls Python
-        uses: AndreMiras/coveralls-python-action@v20201129
-
-
+      - name: Coveralls
+        run: docker exec -e COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN} bookbnb-postserver_web coveralls
+        env:
+          COVERALLS_REPO_TOKEN: ${{ COVERALLS_REPO_TOKEN }}
+        
   deploy:
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
