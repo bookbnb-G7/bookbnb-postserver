@@ -33,12 +33,12 @@ jobs:
       - name: logins
         run: |
           echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
-          echo ${HEROKU_PASSWORD} | docker login -u ${HEROKU_USERNAME} --password-stdin registry.heroku.com
+          echo ${HEROKU_API_KEY} | docker login -u ${HEROKU_USERNAME} --password-stdin registry.heroku.com
         env:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           HEROKU_USERNAME: ${{ secrets.HEROKU_USERNAME }}
-          HEROKU_PASSWORD: ${{ secrets.HEROKU_PASSWORD }}
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
       - name: push container
         run: |
