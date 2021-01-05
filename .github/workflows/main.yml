@@ -23,10 +23,12 @@ jobs:
     needs: test
   
     env:
-      $HEROKU_APP_NAME: bookbnb-postserver
+      HEROKU_APP_NAME: bookbnb-postserver
 
     steps:
       - uses: actions/checkout@v2
+      - name: install heroku-cli
+        run: wget -qO- https://toolbelt.heroku.com/install.sh | sh
       - name: logins
         run: |
           echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
@@ -39,7 +41,7 @@ jobs:
 
       - name: push container
         run: |
-          docker build -t facutorraca/${HEROKU_APP_NAME} .
+          docker build . -t facutorraca/${HEROKU_APP_NAME}
           docker tag facutorraca/${HEROKU_APP_NAME} registry.heroku.com/${HEROKU_APP_NAME}/web;
           docker push facutorraca/${HEROKU_APP_NAME};
 
