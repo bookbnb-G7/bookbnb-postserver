@@ -16,7 +16,7 @@ jobs:
       - name: Coveralls
         run: docker exec -e COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN} bookbnb-postserver_web coveralls
         env:
-          COVERALLS_REPO_TOKEN: ${{ COVERALLS_REPO_TOKEN }}
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         
   deploy:
     if: github.ref == 'refs/heads/master'
