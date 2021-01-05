@@ -14,7 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - uses: actions/checkout@v2
       - name: run pytest
         run: docker exec bookbnb-postserver_web pytest --cov=postserver
       - name: Coveralls
