@@ -21,18 +21,28 @@ async def comment_room(
 
 
 @router.get("", response_model=RoomCommentsList, status_code=200)
-async def get_all_room_reviews(
+async def get_all_room_comments(
     room_id: int, db: Session = Depends(get_db),
     api_key: Optional[str] = Header(None)
 ):
     auth_service.verify_apy_key(api_key)
     room_comments_list = RoomCommentDAO.get_all_comments(db, room_id)
     amount_comments = len(room_comments_list)
-    return {"room_id": room_id, "amount": amount_comments, "reviews": room_comments_list}
+    return {"room_id": room_id, "amount": amount_comments, "comments": room_comments_list}
+
+
+@router.get("/{comment_id}", response_model=RoomCommentDB, status_code=200)
+async def get_room_comment(
+    room_id: int, db: Session = Depends(get_db),
+    api_key: Optional[str] = Header(None)
+):
+    auth_service.verify_apy_key(api_key)
+    room_comment = RoomCommentDAO.get_comment(db, room_id, comment_id)
+    return room_comment
 
 
 @router.delete("/{comment_id}", response_model=RoomCommentDB, status_code=200)
-async def delete_room_review(
+async def delete_room_comment(
     room_id: int, comment_id: int, db: Session = Depends(get_db),
     api_key: Optional[str] = Header(None)
 ):

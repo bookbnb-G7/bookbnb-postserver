@@ -67,6 +67,21 @@ class RoomCommentDAO:
         return all_comments
 
     @classmethod
+    def get_comment(cls, db, room_id, comment_id):
+        if not RoomDAO.room_is_present(db, room_id):
+            raise NotFoundError("room")
+
+        comment = db.query(RoomComment).get(comment_id)
+
+        if comment is None:
+            raise NotFoundError("comment")
+
+        if not comment.is_from(room_id):
+            raise NoRelationError("room", "comment")
+
+        return comment.serialize()
+
+    @classmethod
     def delete_comment(cls, db, room_id, comment_id):
         if not RoomDAO.room_is_present(db, room_id):
             raise NotFoundError("room")
