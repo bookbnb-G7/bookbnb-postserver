@@ -10,6 +10,7 @@ test_room_payload = {
     "owner_uuid": 1,
     "latitude": 1.0,
     "longitude": 2.0,
+    "location": "USA",
     "price_per_day": 1800.0,
     "capacity": 7,
 }

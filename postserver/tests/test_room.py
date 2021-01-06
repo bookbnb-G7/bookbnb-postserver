@@ -8,7 +8,8 @@ test_room_payload = {
     "owner_uuid": 1,
     "longitude": 2,
     "latitude": 1,
-    "price_per_day": 1800.0,
+    "location": "Canada",
+    "price_per_day": 1800,
     "capacity": 7
 }
 
@@ -19,7 +20,8 @@ test_another_room_payload = {
     "owner_uuid": 2,
     "longitude": -46.3,
     "latitude": 51,
-    "price_per_day": 15.0,
+    "location": "USA",
+    "price_per_day": 15,
     "capacity": 3
 }
 
@@ -111,6 +113,7 @@ class TestRoom:
         room_patch = {
             "latitude": 3.0,
             "longitude": 5.0,
+            "location": "new location",
             "type": "mansion",
             "price_per_day": 5000.0,
             "capacity": 6
@@ -139,6 +142,7 @@ class TestRoom:
             "type": test_room_payload["type"],
             "latitude": test_room_payload["latitude"],
             "longitude": test_room_payload["longitude"],
+            "location": test_room_payload["location"],
             "price_per_day": test_room_payload["price_per_day"],
             "capacity": test_room_payload["capacity"]
         }
@@ -242,7 +246,6 @@ class TestRoom:
         # control that room list metadata is correct
         assert response_json["amount"] == 1
 
-
         # get all rooms close to (longitude: -46.31, latitude:51.02)
         response = test_app.get("/rooms/?longitude=-46.31&latitude=51.02",
                                 headers=header)
@@ -318,7 +321,6 @@ class TestRoom:
         # control that room list metadata is correct
         assert response_json["amount"] == 1
 
-
         # get all rooms not booked between (date_begins: 2020-12-15 and date_ends:2020-12-25)
         response = test_app.get("/rooms/?date_from=2020-12-15&date_to=2020-12-25",
                                 headers=header)
@@ -377,7 +379,6 @@ class TestRoom:
         assert frt_room["owner_uuid"] == test_room_payload["owner_uuid"]
         assert frt_room["price_per_day"] == test_room_payload["price_per_day"]
         assert frt_room["capacity"] == test_room_payload["capacity"]
-
 
         # get all rooms that have a capacity for 1 person or more
         response = test_app.get("/rooms/?people=1",
@@ -448,7 +449,6 @@ class TestRoom:
         assert frt_room["owner_uuid"] == test_room_payload["owner_uuid"]
         assert frt_room["price_per_day"] == test_room_payload["price_per_day"]
         assert frt_room["capacity"] == test_room_payload["capacity"]
-
 
         # get all rooms that have a max price of 150
         response = test_app.get("/rooms/?max_price=150",

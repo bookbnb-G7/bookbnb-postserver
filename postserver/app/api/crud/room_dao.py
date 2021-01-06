@@ -1,9 +1,9 @@
-from app.model.room import Room
-from app.errors.http_error import NotFoundError
+import datetime
 from sqlalchemy import func
+from app.model.room import Room
 from geoalchemy2.elements import WKTElement
 from app.model.room_booking import RoomBooking
-import datetime
+from app.errors.http_error import NotFoundError
 
 # Radius of 1 is aprox 111km, so we take search for rooms that are
 # within an 11km distance by using a radius of 0.1
@@ -19,6 +19,13 @@ def validate_date_format(date_text):
         return False
 
 
+def validate_location_args(args):
+    if (args.longitude is not None) and (args.latitude is not None) and (args.location is not None):
+        if (-180 < args.longitude < 180) and (-90 < args.latitude < 90):
+            return True
+    return False
+
+
 class RoomDAO:
     @classmethod
     def add_new_room(cls, db, room_args):
@@ -28,6 +35,7 @@ class RoomDAO:
             owner=room_args.owner,
             latitude=room_args.latitude,
             longitude=room_args.longitude,
+            location=room_args.location,
             owner_uuid=room_args.owner_uuid,
             price_per_day=room_args.price_per_day,
             capacity=room_args.capacity,
@@ -50,6 +58,8 @@ class RoomDAO:
     @classmethod
     def delete_room(cls, db, room_id):
         room = db.query(Room).get(room_id)
+
+        # TODO -> borrar todos los comentarios y reviews/ratings
 
         if room is None:
             raise NotFoundError("room")
@@ -76,15 +86,12 @@ class RoomDAO:
         if update_args.price_per_day is not None:
             room.price_per_day = update_args.price_per_day
 
-        if ((update_args.longitude is not None) and
-            (update_args.latitude is not None) and
-            (-180 < update_args.longitude < 180) and
-            (-90 < update_args.latitude < 90)
-        ):
-            room.location = WKTElement(
+        if validate_location_args(update_args):
+            room.coordinates = WKTElement(
                 f'POINT({update_args.longitude} {update_args.latitude})',
                 srid=4326
             )
+            room.location = update_args.location
 
         if update_args.capacity is not None:
             room.capacity = update_args.capacity
@@ -100,10 +107,10 @@ class RoomDAO:
 
         # Date query
         if ((date_from is not None) and
-            (date_to is not None) and
-            (validate_date_format(date_from)) and
-            (validate_date_format(date_to)) and
-            (datetime.datetime.strptime(date_from, '%Y-%m-%d') <= datetime.datetime.strptime(date_to, '%Y-%m-%d'))
+                (date_to is not None) and
+                (validate_date_format(date_from)) and
+                (validate_date_format(date_to)) and
+                (datetime.datetime.strptime(date_from, '%Y-%m-%d') <= datetime.datetime.strptime(date_to, '%Y-%m-%d'))
         ):
             date_from = datetime.datetime.strptime(date_from, '%Y-%m-%d')
             date_to = datetime.datetime.strptime(date_to, '%Y-%m-%d')
@@ -121,18 +128,13 @@ class RoomDAO:
             partial_query = partial_query.filter(~ Room.id.in_(book_list))
 
         # Location query
-        if ((longitude is not None) and
-            (latitude is not None) and
-            (-180 < longitude < 180) and
-            (-90 < latitude < 90)
-        ):
+        if ((longitude is not None) and (latitude is not None) and
+                (-180 < longitude < 180) and (-90 < latitude < 90)):
             point = WKTElement(f'POINT({longitude} {latitude})', srid=4326)
-            partial_query = partial_query.filter(func.ST_DWithin(Room.location, point, RADIUS))
+            partial_query = partial_query.filter(func.ST_DWithin(Room.coordinates, point, RADIUS))
 
         # People capacity query
-        if ((people is not None) and
-            (people >= 0)
-        ):
+        if (people is not None) and (people >= 0):
             partial_query = partial_query.filter(Room.capacity >= people)
 
         # Owner uuid query

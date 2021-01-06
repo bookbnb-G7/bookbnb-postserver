@@ -11,6 +11,12 @@ class NoRelationError(BookbnbException):
         super().__init__(status_code=400, detail=message)
 
 
+class MainCommentIsAnswerError(BookbnbException):
+    def __init__(self):
+        message = f"an answer cant be a main comment"
+        super().__init__(status_code=400, detail=message)
+
+
 class RoomAlreadyBookedError(BookbnbException):
     def __init__(self):
         message = "the room is already booked on that date"
