@@ -5,6 +5,8 @@ room_id = 1
 
 test_room_payload = {
     "id": 1,
+    "title": "THE ROOM",
+    "description": "You are tearing me apart Lisa",
     "type": "traphouse",
     "owner": "facu, el crack",
     "owner_uuid": 1,

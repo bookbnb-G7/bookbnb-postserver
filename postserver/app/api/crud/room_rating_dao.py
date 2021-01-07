@@ -69,4 +69,3 @@ class RoomRatingDAO:
         db.commit()
 
         return room_rating.serialize()
-

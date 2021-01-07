@@ -22,6 +22,8 @@ class Room(Base):
     __tablename__ = "rooms"
 
     id = Column(Integer, primary_key=True, autoincrement=False)
+    title = Column(String(255), nullable=False)
+    description = Column(String(255), nullable=False)
     type = Column(String(60), nullable=False)
     capacity = Column(Integer, nullable=False)
     owner = Column(String(255), nullable=False)
@@ -33,8 +35,10 @@ class Room(Base):
     created_at = Column(DateTime, nullable=False)
     updated_at = Column(DateTime, nullable=False)
 
-    def __init__(self, id, type, owner, owner_uuid, price_per_day, latitude, longitude, capacity, location):
+    def __init__(self, id, title, description, type, owner, owner_uuid, price_per_day, latitude, longitude, capacity, location):
         self.id = id
+        self.title = title
+        self.description = description
         self.type = type
         self.owner = owner
         self.capacity = capacity
@@ -51,6 +55,8 @@ class Room(Base):
 
         return {
             "id": self.id,
+            "title": self.title,
+            "description": self.description,
             "type": self.type,
             "owner": self.owner,
             "latitude": coordinates['lat'],

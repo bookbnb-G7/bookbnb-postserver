@@ -5,6 +5,8 @@ from typing import List, Optional
 
 class RoomSchema(BaseModel):
     id: int
+    title: str
+    description: str
     type: str
     owner: str
     owner_uuid: int
@@ -26,6 +28,8 @@ class RoomList(BaseModel):
 
 
 class RoomPatch(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
     type: Optional[str] = None
     capacity: Optional[int] = None
     location: Optional[str] = None

@@ -31,6 +31,8 @@ class RoomDAO:
     def add_new_room(cls, db, room_args):
         new_room = Room(
             id=room_args.id,
+            title=room_args.title,
+            description=room_args.description,
             type=room_args.type,
             owner=room_args.owner,
             latitude=room_args.latitude,
@@ -79,6 +81,12 @@ class RoomDAO:
         # we should see if is necessary to update
         # owner and owner id. May be this should
         # be a restricted method)
+
+        if update_args.title is not None:
+            room.title = update_args.title
+
+        if update_args.description is not None:
+            room.description = update_args.description
 
         if update_args.type is not None:
             room.type = update_args.type

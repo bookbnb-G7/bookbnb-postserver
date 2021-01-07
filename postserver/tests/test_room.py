@@ -3,6 +3,8 @@ import pytest
 
 test_room_payload = {
     "id": 1,
+    "title": "THE ROOM",
+    "description": "You are tearing me apart Lisa",
     "type": "traphouse",
     "owner": "facu, el crack",
     "owner_uuid": 1,
@@ -15,6 +17,8 @@ test_room_payload = {
 
 test_another_room_payload = {
     "id": 2,
+    "title": "THE ROOM 2",
+    "description": "You are still tearing me apart Lisa",
     "type": "rancho",
     "owner": "pejelagarto",
     "owner_uuid": 2,
@@ -58,6 +62,8 @@ class TestRoom:
         response_json = response.json()
 
         assert response_json["id"] == 1
+        assert response_json["title"] == test_room_payload["title"]
+        assert response_json["description"] == test_room_payload["description"]
         assert response_json["type"] == test_room_payload["type"]
         assert response_json["owner"] == test_room_payload["owner"]
         assert response_json["latitude"] == test_room_payload["latitude"]
@@ -87,6 +93,8 @@ class TestRoom:
         response_json = response.json()
 
         assert response_json["id"] == 1
+        assert response_json["title"] == test_room_payload["title"]
+        assert response_json["description"] == test_room_payload["description"]
         assert response_json["type"] == test_room_payload["type"]
         assert response_json["owner"] == test_room_payload["owner"]
         assert response_json["latitude"] == test_room_payload["latitude"]
@@ -111,6 +119,8 @@ class TestRoom:
         room_id = 1
 
         room_patch = {
+            "title": "Disaster artist room",
+            "description": "By James Franco",
             "latitude": 3.0,
             "longitude": 5.0,
             "location": "new location",
@@ -128,6 +138,8 @@ class TestRoom:
         response_json = response.json()
 
         assert response_json["id"] == 1
+        assert response_json["title"] == room_patch["title"]
+        assert response_json["description"] == room_patch["description"]
         assert response_json["type"] == room_patch["type"]
         assert response_json["owner"] == test_room_payload["owner"]
         assert response_json["latitude"] == room_patch["latitude"]
@@ -139,6 +151,8 @@ class TestRoom:
         # after that we reset the changes
 
         room_reset_patch = {
+            "title": test_room_payload["title"],
+            "description": test_room_payload["description"],
             "type": test_room_payload["type"],
             "latitude": test_room_payload["latitude"],
             "longitude": test_room_payload["longitude"],
@@ -156,6 +170,8 @@ class TestRoom:
         response_json = response.json()
 
         assert response_json["id"] == 1
+        assert response_json["title"] == test_room_payload["title"]
+        assert response_json["description"] == test_room_payload["description"]
         assert response_json["type"] == test_room_payload["type"]
         assert response_json["owner"] == test_room_payload["owner"]
         assert response_json["latitude"] == test_room_payload["latitude"]
@@ -198,6 +214,8 @@ class TestRoom:
 
         # control that first room is correct
         assert frt_room["id"] == 1
+        assert frt_room["title"] == test_room_payload["title"]
+        assert frt_room["description"] == test_room_payload["description"]
         assert frt_room["type"] == test_room_payload["type"]
         assert frt_room["owner"] == test_room_payload["owner"]
         assert frt_room["latitude"] == test_room_payload["latitude"]
@@ -208,6 +226,8 @@ class TestRoom:
 
         # control that second room is correct
         assert snd_room["id"] == 2
+        assert snd_room["title"] == test_another_room_payload["title"]
+        assert snd_room["description"] == test_another_room_payload["description"]
         assert snd_room["type"] == test_another_room_payload["type"]
         assert snd_room["owner"] == test_another_room_payload["owner"]
         assert snd_room["latitude"] == test_another_room_payload["latitude"]
@@ -235,6 +255,8 @@ class TestRoom:
 
         # control that first room is correct
         assert frt_room["id"] == 1
+        assert frt_room["title"] == test_room_payload["title"]
+        assert frt_room["description"] == test_room_payload["description"]
         assert frt_room["type"] == test_room_payload["type"]
         assert frt_room["owner"] == test_room_payload["owner"]
         assert frt_room["latitude"] == test_room_payload["latitude"]
@@ -258,6 +280,8 @@ class TestRoom:
 
         # control that second room is correct
         assert snd_room["id"] == 2
+        assert snd_room["title"] == test_another_room_payload["title"]
+        assert snd_room["description"] == test_another_room_payload["description"]
         assert snd_room["type"] == test_another_room_payload["type"]
         assert snd_room["owner"] == test_another_room_payload["owner"]
         assert snd_room["latitude"] == test_another_room_payload["latitude"]
@@ -310,6 +334,8 @@ class TestRoom:
 
         # control that first room is correct
         assert frt_room["id"] == 1
+        assert frt_room["title"] == test_room_payload["title"]
+        assert frt_room["description"] == test_room_payload["description"]
         assert frt_room["type"] == test_room_payload["type"]
         assert frt_room["owner"] == test_room_payload["owner"]
         assert frt_room["latitude"] == test_room_payload["latitude"]
@@ -333,6 +359,8 @@ class TestRoom:
 
         # control that second room is correct
         assert snd_room["id"] == 2
+        assert snd_room["title"] == test_another_room_payload["title"]
+        assert snd_room["description"] == test_another_room_payload["description"]
         assert snd_room["type"] == test_another_room_payload["type"]
         assert snd_room["owner"] == test_another_room_payload["owner"]
         assert snd_room["latitude"] == test_another_room_payload["latitude"]
@@ -372,6 +400,8 @@ class TestRoom:
 
         # control that first room is correct
         assert frt_room["id"] == 1
+        assert frt_room["title"] == test_room_payload["title"]
+        assert frt_room["description"] == test_room_payload["description"]
         assert frt_room["type"] == test_room_payload["type"]
         assert frt_room["owner"] == test_room_payload["owner"]
         assert frt_room["latitude"] == test_room_payload["latitude"]
@@ -396,6 +426,8 @@ class TestRoom:
 
         # control that first room is correct
         assert frt_room["id"] == 1
+        assert frt_room["title"] == test_room_payload["title"]
+        assert frt_room["description"] == test_room_payload["description"]
         assert frt_room["type"] == test_room_payload["type"]
         assert frt_room["owner"] == test_room_payload["owner"]
         assert frt_room["latitude"] == test_room_payload["latitude"]
@@ -406,6 +438,8 @@ class TestRoom:
 
         # control that second room is correct
         assert snd_room["id"] == 2
+        assert snd_room["title"] == test_another_room_payload["title"]
+        assert snd_room["description"] == test_another_room_payload["description"]
         assert snd_room["type"] == test_another_room_payload["type"]
         assert snd_room["owner"] == test_another_room_payload["owner"]
         assert snd_room["latitude"] == test_another_room_payload["latitude"]
@@ -442,6 +476,8 @@ class TestRoom:
 
         # control that first room is correct
         assert frt_room["id"] == 1
+        assert frt_room["title"] == test_room_payload["title"]
+        assert frt_room["description"] == test_room_payload["description"]
         assert frt_room["type"] == test_room_payload["type"]
         assert frt_room["owner"] == test_room_payload["owner"]
         assert frt_room["latitude"] == test_room_payload["latitude"]
@@ -465,6 +501,8 @@ class TestRoom:
 
         # control that second room is correct
         assert snd_room["id"] == 2
+        assert snd_room["title"] == test_another_room_payload["title"]
+        assert snd_room["description"] == test_another_room_payload["description"]
         assert snd_room["type"] == test_another_room_payload["type"]
         assert snd_room["owner"] == test_another_room_payload["owner"]
         assert snd_room["latitude"] == test_another_room_payload["latitude"]
@@ -498,6 +536,8 @@ class TestRoom:
         response_json_2 = response_2.json()
 
         assert response_json_1["id"] == room_1_id
+        assert response_json_1["title"] == test_room_payload["title"]
+        assert response_json_1["description"] == test_room_payload["description"]
         assert response_json_1["type"] == test_room_payload["type"]
         assert response_json_1["owner"] == test_room_payload["owner"]
         assert response_json_1["latitude"] == test_room_payload["latitude"]
@@ -507,6 +547,8 @@ class TestRoom:
         assert response_json_1["capacity"] == test_room_payload["capacity"]
 
         assert response_json_2["id"] == room_2_id
+        assert response_json_2["title"] == test_another_room_payload["title"]
+        assert response_json_2["description"] == test_another_room_payload["description"]
         assert response_json_2["type"] == test_another_room_payload["type"]
         assert response_json_2["owner"] == test_another_room_payload["owner"]
         assert response_json_2["latitude"] == test_another_room_payload["latitude"]
