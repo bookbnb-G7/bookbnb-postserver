@@ -13,10 +13,10 @@ class RoomCommentDAO:
 
         if comment_args.main_comment_id is not None:
             if not cls.comment_is_present(db, comment_args.main_comment_id):
-                raise NotFoundError("comment")
+                raise NotFoundError("room comment")
 
             main_comment = db.query(RoomComment).get(comment_args.main_comment_id)
-            if main_comment.is_asnwer():
+            if main_comment.is_answer():
                 raise MainCommentIsAnswerError()
 
         new_comment = RoomComment(
@@ -74,10 +74,10 @@ class RoomCommentDAO:
         comment = db.query(RoomComment).get(comment_id)
 
         if comment is None:
-            raise NotFoundError("comment")
+            raise NotFoundError("room comment")
 
         if not comment.is_from(room_id):
-            raise NoRelationError("room", "comment")
+            raise NoRelationError("room", "room comment")
 
         return comment.serialize()
 
@@ -89,16 +89,16 @@ class RoomCommentDAO:
         comment = db.query(RoomComment).get(comment_id)
 
         if comment is None:
-            raise NotFoundError("comment")
+            raise NotFoundError("room comment")
 
         if not comment.is_from(room_id):
-            raise NoRelationError("room", "comment")
+            raise NoRelationError("room", "room comment")
 
         db.delete(comment)
 
-        if not comment.is_anwer():
+        if not comment.is_answer():
             answers = db.query(RoomComment)\
-                .filter(comment.id == RoomComment.main_comment_id)\
+                .filter(RoomComment.main_comment_id == comment_id)\
                 .all()
 
             for answer in answers:
@@ -106,7 +106,7 @@ class RoomCommentDAO:
 
         db.commit()
 
-        return comment
+        return comment.serialize()
 
     @classmethod
     def comment_is_present(cls, db, comment_id):
