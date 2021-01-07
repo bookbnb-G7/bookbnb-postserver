@@ -7,7 +7,7 @@ from app.errors.auth_error import AuthException
 from app.errors.bookbnb_error import BookbnbException
 from app.api.routes import (room_photo_router, room_rating_router,
                             room_review_router, room_router,
-                            room_booking_router)
+                            room_booking_router,room_comment_router)
 
 Base.metadata.create_all(engine)
 
@@ -60,4 +60,8 @@ app.include_router(
 
 app.include_router(
     room_booking_router.router, prefix="/rooms/{room_id}/bookings", tags=["bookings"]
+)
+
+app.include_router(
+    room_comment_router.router, prefix="/rooms/{room_id}/comments", tags=["coments"]
 )
