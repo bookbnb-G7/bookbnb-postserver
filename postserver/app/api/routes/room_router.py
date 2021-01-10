@@ -1,8 +1,8 @@
-from typing import Optional
+from typing import Optional, List
 from app.db import Session, get_db
 from app.api.crud.room_dao import RoomDAO
 from app.services.auth import auth_service
-from fastapi import APIRouter, Depends, Header
+from fastapi import APIRouter, Depends, Header, Query
 from app.api.models.room_model import (RoomDB,
                                        RoomList,
                                        RoomPatch,
@@ -60,13 +60,14 @@ async def get_all_rooms(
         longitude: Optional[float] = None,
         latitude: Optional[float] = None,
         people: Optional[int] = None,
+        types: List[str] = Query(None),
         owner_uuid: Optional[int] = None,
         min_price: Optional[int] = None,
         max_price: Optional[int] = None
 ):
     auth_service.verify_apy_key(api_key)
     rooms_list = RoomDAO.get_all_rooms(
-        db, date_from, date_to, longitude, latitude, people, owner_uuid, min_price, max_price
+        db, date_from, date_to, longitude, latitude, people, types, owner_uuid, min_price, max_price
     )
     amount_rooms = len(rooms_list)
     return {"amount": amount_rooms, "rooms": rooms_list}
