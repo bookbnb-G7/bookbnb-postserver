@@ -33,13 +33,13 @@ header = {"api-key": "ULTRAMEGAFAKEAPIKEY"}
 
 
 def _create_room(test_app):
-    test_app.post(url="/rooms/",
+    test_app.post(url="/rooms",
                   headers=header,
                   data=json.dumps(test_room_payload))
 
 
 def _delete_room(test_app):
-    test_app.delete(url="/rooms/" + str(room_id),
+    test_app.delete(url="/rooms" + str(room_id),
                     headers=header)
 
 
@@ -49,7 +49,7 @@ class TestRoomRating:
         _create_room(test_app)
 
         response = test_app.post(
-            url="/rooms/" + str(room_id) + "/ratings/",
+            url="/rooms/" + str(room_id) + "/ratings",
             headers=header,
             data=json.dumps(test_room_rating_payload),
         )
@@ -65,7 +65,7 @@ class TestRoomRating:
 
     def test_rate_a_room_without_api_key(self, test_app):
         response = test_app.post(
-            url="/rooms/" + str(room_id) + "/ratings/",
+            url="/rooms/" + str(room_id) + "/ratings",
             data=json.dumps(test_room_rating_payload),
         )
 
@@ -79,7 +79,7 @@ class TestRoomRating:
         not_existent_room_id = 25
 
         response = test_app.post(
-            url="/rooms/" + str(not_existent_room_id) + "/ratings/",
+            url="/rooms/" + str(not_existent_room_id) + "/ratings",
             headers=header,
             data=json.dumps(test_room_rating_payload),
         )
@@ -139,7 +139,7 @@ class TestRoomRating:
     def test_get_all_existing_room_ratings_from_room(self, test_app):
         # add another rating to the existing room
         test_app.post(
-            url="/rooms/" + str(room_id) + "/ratings/",
+            url="/rooms/" + str(room_id) + "/ratings",
             headers=header,
             data=json.dumps(test_another_room_rating_payload)
         )

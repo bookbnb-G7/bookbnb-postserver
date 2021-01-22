@@ -16,11 +16,6 @@ app = FastAPI(
 )
 
 
-@app.get("/")
-async def pong():
-    return {"message": "postserver"}
-
-
 @app.exception_handler(HTTPException)
 async def http_exception_handler(_request, exc):
     error = {"error": exc.detail}

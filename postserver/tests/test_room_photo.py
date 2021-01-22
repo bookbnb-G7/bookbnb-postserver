@@ -32,7 +32,7 @@ header = {"api-key": "ULTRAMEGAFAKEAPIKEY"}
 
 
 def _create_room(test_app):
-    test_app.post(url="/rooms/",
+    test_app.post(url="/rooms",
                   headers=header,
                   data=json.dumps(test_room_payload))
 
@@ -48,7 +48,7 @@ class TestRoomPhoto:
         _create_room(test_app)
 
         response = test_app.post(
-            url="/rooms/" + str(room_id) + "/photos/",
+            url="/rooms/" + str(room_id) + "/photos",
             headers=header,
             data=json.dumps(test_room_photo_payload)
         )
@@ -63,7 +63,7 @@ class TestRoomPhoto:
 
     def test_upload_photo_without_api_key(self, test_app):
         response = test_app.post(
-            url="/rooms/" + str(room_id) + "/photos/",
+            url="/rooms/" + str(room_id) + "/photos",
             data=json.dumps(test_room_photo_payload)
         )
 
@@ -90,13 +90,13 @@ class TestRoomPhoto:
 
     def test_get_all_photos_from_room(self, test_app):
         test_app.post(
-            url="/rooms/" + str(room_id) + "/photos/",
+            url="/rooms/" + str(room_id) + "/photos",
             headers=header,
             data=json.dumps(test_another_room_photo_payload),
         )
 
         response = test_app.get(
-            url="/rooms/" + str(room_id) + "/photos/",
+            url="/rooms/" + str(room_id) + "/photos",
             headers=header
         )
 

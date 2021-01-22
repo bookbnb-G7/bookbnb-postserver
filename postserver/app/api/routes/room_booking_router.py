@@ -8,7 +8,7 @@ from app.api.models.room_booking_model import RoomBookingDB, RoomBookingSchema
 router = APIRouter()
 
 
-@router.post("/", response_model=RoomBookingDB, status_code=201)
+@router.post("", response_model=RoomBookingDB, status_code=201)
 async def book_room(
     room_id: int, payload: RoomBookingSchema,
     db: Session = Depends(get_db),
