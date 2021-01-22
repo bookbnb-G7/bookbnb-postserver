@@ -33,7 +33,7 @@ header = {"api-key": "ULTRAMEGAFAKEAPIKEY"}
 
 
 def _create_room(test_app):
-    test_app.post(url="/rooms/",
+    test_app.post(url="/rooms",
                   headers=header,
                   data=json.dumps(test_room_payload))
 
@@ -49,7 +49,7 @@ class TestRoomBooking:
         _create_room(test_app)
 
         response = test_app.post(
-            url="/rooms/" + str(room_id) + "/bookings/",
+            url="/rooms/" + str(room_id) + "/bookings",
             headers=header,
             data=json.dumps(test_room_booking_payload),
         )
@@ -65,7 +65,7 @@ class TestRoomBooking:
 
     def test_book_a_room_without_api_key(self, test_app):
         response = test_app.post(
-            url="/rooms/" + str(room_id) + "/bookings/",
+            url="/rooms/" + str(room_id) + "/bookings",
             data=json.dumps(test_room_booking_payload),
         )
 
@@ -79,7 +79,7 @@ class TestRoomBooking:
         not_existent_room_id = 25
 
         response = test_app.post(
-            url="/rooms/" + str(not_existent_room_id) + "/bookings/",
+            url="/rooms/" + str(not_existent_room_id) + "/bookings",
             headers=header,
             data=json.dumps(test_room_booking_payload),
         )

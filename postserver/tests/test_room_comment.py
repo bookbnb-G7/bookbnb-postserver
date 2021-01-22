@@ -35,7 +35,7 @@ header = {"api-key": "ULTRAMEGAFAKEAPIKEY"}
 
 
 def _create_room(test_app):
-    test_app.post(url="/rooms/",
+    test_app.post(url="/rooms",
                   headers=header,
                   data=json.dumps(test_room_payload))
 

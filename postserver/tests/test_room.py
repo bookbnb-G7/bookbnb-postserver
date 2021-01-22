@@ -53,7 +53,7 @@ header = {"api-key": "ULTRAMEGAFAKEAPIKEY"}
 @pytest.mark.usefixtures("test_app")
 class TestRoom:
     def test_create_room(self, test_app):
-        response = test_app.post("/rooms/",
+        response = test_app.post("/rooms",
                                  headers=header,
                                  data=json.dumps(test_room_payload))
 
@@ -73,7 +73,7 @@ class TestRoom:
         assert response_json["capacity"] == test_room_payload["capacity"]
 
     def test_create_room_without_api_key(self, test_app):
-        response = test_app.post("/rooms/",
+        response = test_app.post("/rooms",
                                  data=json.dumps(test_room_payload))
 
         assert response.status_code == 400
@@ -197,12 +197,12 @@ class TestRoom:
 
     def test_get_all_existing_rooms(self, test_app):
         # add another room
-        test_app.post("/rooms/",
+        test_app.post("/rooms",
                       data=json.dumps(test_another_room_payload),
                       headers=header)
 
         # get all rooms
-        response = test_app.get("/rooms/",
+        response = test_app.get("/rooms",
                                 headers=header)
 
         assert response.status_code == 200
@@ -244,7 +244,7 @@ class TestRoom:
         # within a 0.1 distance from the given point
 
         # get all rooms close to (longitude: 2.01, latitude:1)
-        response = test_app.get("/rooms/?longitude=2.01&latitude=1",
+        response = test_app.get("/rooms?longitude=2.01&latitude=1",
                                 headers=header)
 
         assert response.status_code == 200
@@ -269,7 +269,7 @@ class TestRoom:
         assert response_json["amount"] == 1
 
         # get all rooms close to (longitude: -46.31, latitude:51.02)
-        response = test_app.get("/rooms/?longitude=-46.31&latitude=51.02",
+        response = test_app.get("/rooms?longitude=-46.31&latitude=51.02",
                                 headers=header)
 
         assert response.status_code == 200
@@ -294,7 +294,7 @@ class TestRoom:
         assert response_json["amount"] == 1
 
         # get all rooms close to (longitude: 110, latitude:89.3)
-        response = test_app.get("/rooms/?longitude=110&latitude=89.3",
+        response = test_app.get("/rooms?longitude=110&latitude=89.3",
                                 headers=header)
 
         assert response.status_code == 200
@@ -310,20 +310,20 @@ class TestRoom:
 
         # the first room is booked between 2020-12-22 to 2020-12-24
         test_app.post(
-            url="/rooms/" + str(room_id_1) + "/bookings/",
+            url="/rooms/" + str(room_id_1) + "/bookings",
             headers=header,
             data=json.dumps(test_room_booking_payload)
         )
 
         # the second room is booked between 2020-11-10 to 2020-11-14
         test_app.post(
-            url="/rooms/" + str(room_id_2) + "/bookings/",
+            url="/rooms/" + str(room_id_2) + "/bookings",
             headers=header,
             data=json.dumps(test_another_room_booking_payload)
         )
 
         # get all rooms not booked between (date_begins: 2020-11-3 and date_ends:2020-11-25)
-        response = test_app.get("/rooms/?date_from=2020-11-3&date_to=2020-11-25",
+        response = test_app.get("/rooms?date_from=2020-11-3&date_to=2020-11-25",
                                 headers=header)
 
         assert response.status_code == 200
@@ -348,7 +348,7 @@ class TestRoom:
         assert response_json["amount"] == 1
 
         # get all rooms not booked between (date_begins: 2020-12-15 and date_ends:2020-12-25)
-        response = test_app.get("/rooms/?date_from=2020-12-15&date_to=2020-12-25",
+        response = test_app.get("/rooms?date_from=2020-12-15&date_to=2020-12-25",
                                 headers=header)
 
         assert response.status_code == 200
@@ -373,7 +373,7 @@ class TestRoom:
         assert response_json["amount"] == 1
 
         # get all rooms not booked between (date_begins=2020-11-3 and date_ends=2020-12-30)
-        response = test_app.get("/rooms/?date_from=2020-11-3&date_to=2020-12-30",
+        response = test_app.get("/rooms?date_from=2020-11-3&date_to=2020-12-30",
                                 headers=header)
 
         assert response.status_code == 200
@@ -386,7 +386,7 @@ class TestRoom:
     def test_get_all_existing_rooms_that_have_enough_capacity(self, test_app):
 
         # get all rooms that have a capacity for 4 persons or more
-        response = test_app.get("/rooms/?people=4",
+        response = test_app.get("/rooms?people=4",
                                 headers=header)
 
         assert response.status_code == 200
@@ -411,7 +411,7 @@ class TestRoom:
         assert frt_room["capacity"] == test_room_payload["capacity"]
 
         # get all rooms that have a capacity for 1 person or more
-        response = test_app.get("/rooms/?people=1",
+        response = test_app.get("/rooms?people=1",
                                 headers=header)
 
         assert response.status_code == 200
@@ -449,7 +449,7 @@ class TestRoom:
         assert snd_room["capacity"] == test_another_room_payload["capacity"]
 
         # get all rooms that have a capacity for 11 persons or more
-        response = test_app.get("/rooms/?people=11",
+        response = test_app.get("/rooms?people=11",
                                 headers=header)
 
         assert response.status_code == 200
@@ -462,7 +462,7 @@ class TestRoom:
     def test_get_all_rooms_min_max_price(self, test_app):
 
         # get all rooms that have a min price of 150
-        response = test_app.get("/rooms/?min_price=150",
+        response = test_app.get("/rooms?min_price=150",
                                 headers=header)
 
         assert response.status_code == 200
@@ -487,7 +487,7 @@ class TestRoom:
         assert frt_room["capacity"] == test_room_payload["capacity"]
 
         # get all rooms that have a max price of 150
-        response = test_app.get("/rooms/?max_price=150",
+        response = test_app.get("/rooms?max_price=150",
                                 headers=header)
 
         assert response.status_code == 200
@@ -512,7 +512,7 @@ class TestRoom:
         assert snd_room["capacity"] == test_another_room_payload["capacity"]
 
         # get all rooms that have a price between 100 and 200
-        response = test_app.get("/rooms/?min_price=100&max_price=200",
+        response = test_app.get("/rooms?min_price=100&max_price=200",
                                 headers=header)
 
         assert response.status_code == 200
@@ -525,7 +525,7 @@ class TestRoom:
     def test_get_all_rooms_with_type(self, test_app):
 
         # get all rooms that have a min price of 150
-        response = test_app.get('/rooms/?types=traphouse',
+        response = test_app.get('/rooms?types=traphouse',
                                 headers=header)
 
         assert response.status_code == 200
@@ -550,7 +550,7 @@ class TestRoom:
         assert frt_room["capacity"] == test_room_payload["capacity"]
 
         # get all rooms that have a max price of 150
-        response = test_app.get('/rooms/?types=rancho',
+        response = test_app.get('/rooms?types=rancho',
                                 headers=header)
 
         assert response.status_code == 200
@@ -575,7 +575,7 @@ class TestRoom:
         assert snd_room["capacity"] == test_another_room_payload["capacity"]
 
         # get all rooms that have a price between 100 and 200
-        response = test_app.get('/rooms/?types=rancho&types=traphouse',
+        response = test_app.get('/rooms?types=rancho&types=traphouse',
                                 headers=header)
 
         assert response.status_code == 200
@@ -613,7 +613,7 @@ class TestRoom:
         assert snd_room["capacity"] == test_another_room_payload["capacity"]
 
         # get all rooms that have a price between 100 and 200
-        response = test_app.get('/rooms/?types=casa',
+        response = test_app.get('/rooms?types=casa',
                                 headers=header)
 
         assert response.status_code == 200

@@ -10,7 +10,7 @@ from app.api.models.room_review_model import (RoomReviewDB,
 router = APIRouter()
 
 
-@router.post("/", response_model=RoomReviewDB, status_code=201)
+@router.post("", response_model=RoomReviewDB, status_code=201)
 async def review_room(
     payload: RoomReviewSchema, room_id: int, db: Session = Depends(get_db),
     api_key: Optional[str] = Header(None)
@@ -20,7 +20,7 @@ async def review_room(
     return room_review_info
 
 
-@router.get("/", response_model=RoomReviewList, status_code=200)
+@router.get("", response_model=RoomReviewList, status_code=200)
 async def get_all_room_reviews(
     room_id: int, db: Session = Depends(get_db),
     api_key: Optional[str] = Header(None)

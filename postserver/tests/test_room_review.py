@@ -33,7 +33,7 @@ header = {"api-key": "ULTRAMEGAFAKEAPIKEY"}
 
 
 def _create_room(test_app):
-    test_app.post(url="/rooms/",
+    test_app.post(url="/rooms",
                   headers=header,
                   data=json.dumps(test_room_payload))
 
@@ -49,7 +49,7 @@ class TestRoomReview:
         _create_room(test_app)
 
         response = test_app.post(
-            url="/rooms/" + str(room_id) + "/reviews/",
+            url="/rooms/" + str(room_id) + "/reviews",
             headers=header,
             data=json.dumps(test_room_review_payload),
         )
@@ -65,7 +65,7 @@ class TestRoomReview:
 
     def test_review_a_room_without_api_key(self, test_app):
         response = test_app.post(
-            url="/rooms/" + str(room_id) + "/reviews/",
+            url="/rooms/" + str(room_id) + "/reviews",
             data=json.dumps(test_room_review_payload),
         )
 
@@ -79,7 +79,7 @@ class TestRoomReview:
         not_existent_room_id = 25
 
         response = test_app.post(
-            url="/rooms/" + str(not_existent_room_id) + "/reviews/",
+            url="/rooms/" + str(not_existent_room_id) + "/reviews",
             headers=header,
             data=json.dumps(test_room_review_payload),
         )
@@ -139,7 +139,7 @@ class TestRoomReview:
     def test_get_all_existing_room_reviews_from_room(self, test_app):
         # add another room
         test_app.post(
-            url="/rooms/" + str(room_id) + "/reviews/",
+            url="/rooms/" + str(room_id) + "/reviews",
             headers=header,
             data=json.dumps(test_another_room_review_payload),
         )

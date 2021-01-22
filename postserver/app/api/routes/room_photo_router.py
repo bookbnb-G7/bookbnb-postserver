@@ -10,7 +10,7 @@ from app.api.models.room_photo_model import (RoomPhotoDB,
 router = APIRouter()
 
 
-@router.post("/", response_model=RoomPhotoDB, status_code=201)
+@router.post("", response_model=RoomPhotoDB, status_code=201)
 async def new_room_photo(
     payload: RoomPhotoSchema, room_id: int, db: Session = Depends(get_db),
     api_key: Optional[str] = Header(None)
@@ -40,7 +40,7 @@ async def delete_room_photo(
     return room_photo_info
 
 
-@router.get("/", response_model=RoomPhotoList, status_code=200)
+@router.get("", response_model=RoomPhotoList, status_code=200)
 async def get_all_room_photos(
     room_id: int, db: Session = Depends(get_db),
     api_key: Optional[str] = Header(None)

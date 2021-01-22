@@ -11,7 +11,7 @@ from app.api.models.room_model import (RoomDB,
 router = APIRouter()
 
 
-@router.post("/", response_model=RoomDB, status_code=201)
+@router.post("", response_model=RoomDB, status_code=201)
 async def create_room(
         payload: RoomSchema, db: Session = Depends(get_db),
         api_key: Optional[str] = Header(None)
@@ -51,7 +51,7 @@ async def update_room(
     return room_info
 
 
-@router.get("/", response_model=RoomList, status_code=200)
+@router.get("", response_model=RoomList, status_code=200)
 async def get_all_rooms(
         db: Session = Depends(get_db),
         api_key: Optional[str] = Header(None),
