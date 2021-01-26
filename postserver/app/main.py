@@ -2,12 +2,14 @@ import logging
 from fastapi import FastAPI
 from app.db import Base, engine
 from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
+from sqlalchemy.exc import SQLAlchemyError
 from starlette.exceptions import HTTPException
 from app.errors.auth_error import AuthException
 from app.errors.bookbnb_error import BookbnbException
 from app.api.routes import (room_photo_router, room_rating_router,
                             room_review_router, room_router,
-                            room_booking_router,room_comment_router)
+                            room_booking_router, room_comment_router)
 
 Base.metadata.create_all(engine)
 
@@ -35,6 +37,20 @@ async def auth_exception_handler(_request, exc):
     error = {"error": exc.detail}
     logging.error(f"status code: {exc.status_code} message: {exc.detail}")
     return JSONResponse(status_code=exc.status_code, content=error)
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    error = {"error": str(exc)}
+    logging.error(f"status code: 400 message: {str(exc)}")
+    return JSONResponse(status_code=400, content=error)
+
+
+@app.exception_handler(SQLAlchemyError)
+async def sql_exception_handler(request, exc):
+    error = {"error": str(exc.__dict__['orig'])}
+    logging.error(f"status code: 500 message: {str(exc.__dict__['orig'])}")
+    return JSONResponse(status_code=500, content=error)
 
 
 app.include_router(
