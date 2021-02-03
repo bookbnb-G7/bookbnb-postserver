@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from app.db import Base, engine
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.exc import SQLAlchemyError
 from starlette.exceptions import HTTPException
 from app.errors.auth_error import AuthException
@@ -15,6 +16,13 @@ Base.metadata.create_all(engine)
 
 app = FastAPI(
     title="bookbnb-postserver", description="postserver API"
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
