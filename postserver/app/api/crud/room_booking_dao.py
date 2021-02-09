@@ -51,11 +51,23 @@ class RoomBookingDAO:
 
     @classmethod
     def bookings_on_same_date(cls, db, room_id, date_from, date_to):
-        bookings_on_same_date = db.query(RoomBooking) \
+
+        bookings_on_same_date_1 = db.query(RoomBooking) \
+            .filter(RoomBooking.room_id == room_id) \
+            .filter(RoomBooking.date_from >= date_from,
+                    RoomBooking.date_to <= date_to) \
+            .count()
+
+        bookings_on_same_date_2 = db.query(RoomBooking) \
             .filter(RoomBooking.room_id == room_id) \
             .filter(RoomBooking.date_from <= date_from,
-                    RoomBooking.date_to >= date_from,
-                    RoomBooking.date_from <= date_to,
-                    RoomBooking.date_to >= date_to) \
+                    RoomBooking.date_to >= date_from) \
             .count()
-        return bookings_on_same_date
+
+        bookings_on_same_date_3 = db.query(RoomBooking) \
+            .filter(RoomBooking.room_id == room_id) \
+            .filter(RoomBooking.date_from <= date_to,
+                    RoomBooking.date_to >= date_to)\
+            .count()
+
+        return (bookings_on_same_date_1 + bookings_on_same_date_2 + bookings_on_same_date_3)

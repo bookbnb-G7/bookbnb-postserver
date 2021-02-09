@@ -18,6 +18,7 @@ class RoomSchema(BaseModel):
 
 
 class RoomDB(RoomSchema):
+    blocked: bool
     created_at: datetime
     updated_at: datetime
 
@@ -36,3 +37,4 @@ class RoomPatch(BaseModel):
     latitude: Optional[float] = None
     longitude: Optional[float] = None
     price_per_day: Optional[int] = None
+    blocked: Optional[bool] = None
