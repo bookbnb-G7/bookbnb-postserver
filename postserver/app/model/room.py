@@ -3,7 +3,7 @@ from datetime import datetime
 from geoalchemy2 import Geometry
 from geoalchemy2.shape import to_shape
 from geoalchemy2.elements import WKTElement
-from sqlalchemy import Column, DateTime, Float, Integer, String
+from sqlalchemy import Column, DateTime, Float, Integer, String, Boolean
 
 
 def _get_coordinates_from_geom(geom: WKTElement):
@@ -31,6 +31,7 @@ class Room(Base):
     price_per_day = Column(Integer, nullable=False)
     location = Column(String(255), nullable=False)
     coordinates = Column(Geometry(geometry_type='POINT', srid=4326))
+    blocked = Column(Boolean, nullable=False)
 
     created_at = Column(DateTime, nullable=False)
     updated_at = Column(DateTime, nullable=False)
@@ -46,6 +47,7 @@ class Room(Base):
         self.owner_uuid = owner_uuid
         self.price_per_day = price_per_day
         self.coordinates = WKTElement(f'POINT({longitude} {latitude})', srid=4326)
+        self.blocked = False
 
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
@@ -65,6 +67,7 @@ class Room(Base):
             "price_per_day": self.price_per_day,
             "capacity": self.capacity,
             "location": self.location,
+            "blocked": self.blocked,
 
             "created_at": self.created_at,
             "updated_at": self.updated_at,
