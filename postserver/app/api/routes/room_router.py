@@ -65,11 +65,12 @@ async def get_all_rooms(
         min_price: Optional[int] = None,
         max_price: Optional[int] = None,
         allow_blocked: Optional[bool] = False,
-        only_blocked: Optional[bool] = False
+        only_blocked: Optional[bool] = False,
+        ids: List[int] = Query(None),
 ):
     auth_service.verify_apy_key(api_key)
     rooms_list = RoomDAO.get_all_rooms(
-        db, date_from, date_to, longitude, latitude, people, types, owner_uuid, min_price, max_price, allow_blocked, only_blocked
+        db, date_from, date_to, longitude, latitude, people, types, owner_uuid, min_price, max_price, allow_blocked, only_blocked, ids
     )
     amount_rooms = len(rooms_list)
     return {"amount": amount_rooms, "rooms": rooms_list}
