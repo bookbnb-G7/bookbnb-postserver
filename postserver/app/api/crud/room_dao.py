@@ -104,6 +104,9 @@ class RoomDAO:
         if update_args.capacity is not None:
             room.capacity = update_args.capacity
 
+        if update_args.blocked is not None:
+            room.blocked = update_args.blocked
+
         db.commit()
 
         return room.serialize()
