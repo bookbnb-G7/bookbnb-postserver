@@ -104,12 +104,15 @@ class RoomDAO:
         if update_args.capacity is not None:
             room.capacity = update_args.capacity
 
+        if update_args.blocked is not None:
+            room.blocked = update_args.blocked
+
         db.commit()
 
         return room.serialize()
 
     @classmethod
-    def get_all_rooms(cls, db, date_from, date_to, longitude, latitude, people, types, owner_uuid, min_price, max_price, allow_blocked, only_blocked):
+    def get_all_rooms(cls, db, date_from, date_to, longitude, latitude, people, types, owner_uuid, min_price, max_price, allow_blocked, only_blocked, ids):
 
         partial_query = db.query(Room)
 
@@ -165,6 +168,9 @@ class RoomDAO:
 
         if only_blocked is True:
             partial_query = partial_query.filter(Room.blocked == True)
+
+        if ids is not None:
+            partial_query = partial_query.filter(Room.id.in_(ids))
 
         rooms_list = partial_query.all()
 
