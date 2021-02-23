@@ -182,7 +182,7 @@ class RoomDAO:
 
     @classmethod
     def get_recomended_rooms(cls, db):
-        rooms_list = db.query(Room).order_by(func.random()).limit(10).all()
+        rooms_list = db.query(Room).filter(Room.blocked == False).order_by(func.random()).limit(10).all()
 
         serialized_list = []
         for room in rooms_list:
