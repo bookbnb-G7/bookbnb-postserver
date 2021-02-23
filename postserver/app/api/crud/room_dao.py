@@ -181,6 +181,16 @@ class RoomDAO:
         return serialized_list
 
     @classmethod
+    def get_recomended_rooms(cls, db):
+        rooms_list = db.query(Room).order_by(func.random()).limit(10).all()
+
+        serialized_list = []
+        for room in rooms_list:
+            serialized_list.append(room.serialize())
+
+        return serialized_list
+
+    @classmethod
     def room_is_present(cls, db, room_id):
         room = db.query(Room).get(room_id)
         return room is not None
