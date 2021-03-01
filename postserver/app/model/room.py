@@ -68,6 +68,7 @@ class Room(Base):
             "capacity": self.capacity,
             "location": self.location,
             "blocked": self.blocked,
+            "favorite": False,
 
             "created_at": self.created_at,
             "updated_at": self.updated_at,
