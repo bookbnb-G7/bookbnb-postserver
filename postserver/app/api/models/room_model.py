@@ -19,6 +19,7 @@ class RoomSchema(BaseModel):
 
 class RoomDB(RoomSchema):
     blocked: bool
+    favorite: bool
     created_at: datetime
     updated_at: datetime
 
