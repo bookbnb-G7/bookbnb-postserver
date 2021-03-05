@@ -26,7 +26,7 @@ async def get_room_photo(
     api_key: Optional[str] = Header(None)
 ):
     auth_service.verify_apy_key(api_key)
-    room_photo_info = RoomPhotoDAO.get_room_photo(db, firebase_id)
+    room_photo_info = RoomPhotoDAO.get_room_photo(db, room_id, firebase_id)
     return room_photo_info
 
 
@@ -36,7 +36,7 @@ async def delete_room_photo(
     api_key: Optional[str] = Header(None)
 ):
     auth_service.verify_apy_key(api_key)
-    room_photo_info = RoomPhotoDAO.delete_room_photo(db, firebase_id)
+    room_photo_info = RoomPhotoDAO.delete_room_photo(db, room_id, firebase_id)
     return room_photo_info
 
 

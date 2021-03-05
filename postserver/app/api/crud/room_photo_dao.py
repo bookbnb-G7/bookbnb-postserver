@@ -17,9 +17,9 @@ class RoomPhotoDAO:
         return new_room_photo.serialize()
 
     @classmethod
-    def get_room_photo(cls, db, firebase_id):
+    def get_room_photo(cls, db, room_id, firebase_id):
         room_photo = (
-            db.query(RoomPhoto).filter(RoomPhoto.firebase_id == firebase_id).first()
+            db.query(RoomPhoto).filter(RoomPhoto.room_id == room_id).filter(RoomPhoto.firebase_id == firebase_id).first()
         )
 
         if room_photo is None:
@@ -28,9 +28,9 @@ class RoomPhotoDAO:
         return room_photo.serialize()
 
     @classmethod
-    def delete_room_photo(cls, db, firebase_id):
+    def delete_room_photo(cls, db, room_id, firebase_id):
         room_photo = (
-            db.query(RoomPhoto).filter(RoomPhoto.firebase_id == firebase_id).first()
+            db.query(RoomPhoto).filter(RoomPhoto.room_id == room_id).filter(RoomPhoto.firebase_id == firebase_id).first()
         )
 
         if room_photo is None:
